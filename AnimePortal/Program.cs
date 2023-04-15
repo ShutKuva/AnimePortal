@@ -6,6 +6,7 @@ using BLL.Jwt;
 using Core.DB;
 using Core.DI;
 using DAL;
+using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +45,8 @@ builder.Services.AddDbContext<AuthServerContext>(options =>
     }
 });
 builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudForEntity<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<JwtGeneralHelper>();
 builder.Services.AddScoped<JwtRefresher>();
 builder.Services.AddScoped<JWTTokensManipulator>();
