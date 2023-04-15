@@ -36,7 +36,7 @@ builder.Services.AddDbContext<AuthServerContext>(options =>
 {
     if (builder.Environment.IsDevelopment())
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("AuthServerConnectionString"));
+        options.UseNpgsql(builder.Configuration["ASPNETCORE_AuthConnection"]);
     }
     else
     {
