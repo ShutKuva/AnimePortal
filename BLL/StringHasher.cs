@@ -9,9 +9,9 @@ namespace BLL
         {
             using HashAlgorithm algorithm = SHA256.Create();
 
-            byte[] encryptedByteArray = algorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+            byte[] encryptedByteArray = algorithm.ComputeHash(Encoding.Unicode.GetBytes(input));
 
-            return Encoding.UTF8.GetString(encryptedByteArray);
+            return Encoding.Unicode.GetString(encryptedByteArray);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=ZHEKA;Database=AuthServer;Trusted_Connection=True;");
+            optionsBuilder.UseNpgsql("User ID=yevhenii.zhuravel;Password=ec4WuUqB6fjb;Host=ep-dawn-cherry-183783.eu-central-1.aws.neon.tech;Database=neondb;Pooling=true;Connection Lifetime=0;");
             base.OnConfiguring(optionsBuilder);
         }
     }

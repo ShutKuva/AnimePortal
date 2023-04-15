@@ -27,17 +27,17 @@ namespace BLL.Jwt
 
         public async Task<JwtUserDTO> ProcessUser(User user)
         {
-
             user.RefreshToken = _jWTTokensManipulator.CreateRefreshToken();
-            user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime);
+            user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime).ToUniversalTime();
 
             await _userCrudService.Update(user);
 
             JwtSecurityToken token = GenerateJwtTokenForUser(user);
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             return new JwtUserDTO
             {
-                Token = token.ToString(),
+                Token = handler.WriteToken(token),
                 RefreshToken = user.RefreshToken
             };
         }

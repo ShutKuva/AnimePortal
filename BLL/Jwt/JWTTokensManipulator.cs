@@ -24,7 +24,7 @@ namespace BLL.Jwt
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.Sha256),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
                 issuer: _jwtConfigurations.Issuer,
                 audience: _jwtConfigurations.Audience,
                 expires: DateTime.Now.AddHours(_jwtConfigurations.Lifetime)
