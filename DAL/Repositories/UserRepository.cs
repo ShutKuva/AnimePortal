@@ -43,7 +43,7 @@ namespace DAL.Repositories
 
         public IEnumerable<User?> ReadByCondition(Expression<Func<User, bool>> predicate)
         {
-            return _context.Set<User>().Where(predicate).AsEnumerable();
+            return _context.Set<User>().Where(predicate).ToList();
         }
 
         public async Task<IEnumerable<User>> ReadByConditionAsync(Expression<Func<User, bool>> predicate)
