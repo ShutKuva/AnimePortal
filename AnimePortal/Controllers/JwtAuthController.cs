@@ -1,16 +1,13 @@
 ﻿using BLL.Abstractions;
 using BLL.Jwt;
-using Core;
 using Core.Abstractions.DTOs.Interfaces;
 using Core.DB;
 using Core.DTOs.Jwt;
-using DAL;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimePortal.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class JwtAuthController : ControllerBase
     {
@@ -31,15 +28,16 @@ namespace AnimePortal.Controllers
             return Created(string.Empty, user);
         }
 
-        [HttpGet("login")]
-        public async Task<OkObjectResult> LoginUser([FromBody] LoginUser userModel)
+        [HttpPost("login")]
+        public async Task<ActionResult<IUserDTO>> LoginUser([FromBody] LoginUser userModel)
         {
             IUserDTO user = await _userManipulator.LoginUser(userModel);
 
             return Ok(user);
         }
 
-        public async Task<OkObjectResult> RefreshJwtToken([FromBody] RefreshUser refreshUser)
+        [HttpPost("refresh")]
+        public async Task<ActionResult<IUserDTO>> RefreshJwtToken([FromBody] RefreshUser refreshUser)
         {
             IUserDTO user = await _jwtRefresher.RefreshToken(refreshUser);
 

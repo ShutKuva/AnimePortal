@@ -34,7 +34,14 @@ builder.Services.AddAuthorization();
 //Services
 builder.Services.AddDbContext<AuthServerContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AuthServerConnectionString"));
+    if (builder.Environment.IsDevelopment())
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("AuthServerConnectionString"));
+    }
+    else
+    {
+        options.UseNpgsql(builder.Configuration["AUTH_SERVER_CONNECTION_STRING"]);
+    }
 });
 builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudForEntity<>));
 builder.Services.AddScoped<JwtGeneralHelper>();
@@ -61,6 +68,8 @@ app.UseMigration();
 app.UseErrorHandling();
 
 app.UseHttpsRedirection();
+
+app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseAuthorization();
 
