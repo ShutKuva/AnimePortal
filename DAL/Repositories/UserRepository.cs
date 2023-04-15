@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Core.DB;
 using DAL.Abstractions.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DAL.Repositories
 {
@@ -45,15 +46,25 @@ namespace DAL.Repositories
             return _context.Set<User>().Where(predicate).ToList();
         }
 
-        public Task Update(User entity)
+        public async Task Update(User entity)
         {
-            _context.Users.Update(entity);
-            return Task.CompletedTask;
+            User? oldEntity = await ReadAsync(entity.Id);
+
+            if (oldEntity == null)
+            {
+               await CreateAsync(entity);
+            }
+            else
+            {
+                EntityEntry<User> entityEntry = _context.Entry(oldEntity);
+
+                entityEntry.CurrentValues.SetValues(entity);
+            }
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var user = Read(id);
+            var user = await ReadAsync(id);
             if (user != null)
             {
                 _context.Users.Remove(user);
