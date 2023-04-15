@@ -43,16 +43,22 @@ namespace DAL.Repositories
 
         public IEnumerable<User?> ReadByCondition(Expression<Func<User, bool>> predicate)
         {
-            return _context.Set<User>().Where(predicate).ToList();
+            return _context.Set<User>().Where(predicate).AsEnumerable();
         }
 
-        public async Task Update(User entity)
+        public async Task<IEnumerable<User>> ReadByConditionAsync(Expression<Func<User, bool>> predicate)
+        {
+            var users = await _context.Users.Where(predicate).ToListAsync();
+            return users;
+        }
+
+        public async Task UpdateAsync(User entity)
         {
             User? oldEntity = await ReadAsync(entity.Id);
 
             if (oldEntity == null)
             {
-               await CreateAsync(entity);
+                await CreateAsync(entity);
             }
             else
             {
@@ -62,7 +68,7 @@ namespace DAL.Repositories
             }
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var user = await ReadAsync(id);
             if (user != null)
@@ -70,5 +76,6 @@ namespace DAL.Repositories
                 _context.Users.Remove(user);
             }
         }
+
     }
 }
