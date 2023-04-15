@@ -11,6 +11,6 @@ public interface IRepository<T> where T : BaseEntity
     Task<T?> ReadAsync(int id);
     IEnumerable<T?> ReadByCondition(Expression<Func<T, bool>> predicate);
     Task Update(T entity);
-    void Delete(int id);
+    Task Delete(int id);
 
 }
