@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using AnimePortalAuthServer.Errors;
+using System.Net;
 
 namespace AnimePortalAuthServer.Middlewares
 {
@@ -7,10 +7,14 @@ namespace AnimePortalAuthServer.Middlewares
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlerMiddleware> _logger;
+        private readonly IHostEnvironment _env;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger, IHostEnvironment env)
         {
             _next = next;
+            _logger = logger;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -19,20 +23,33 @@ namespace AnimePortalAuthServer.Middlewares
             {
                 await _next(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes(ex.Message));
-            }
-        }
-    }
 
-    public static class ErrorHandlerMiddlewareExtension
-    {
-        public static WebApplication UseErrorHandling(this WebApplication app)
-        {
-            app.UseMiddleware<ErrorHandlerMiddleware>();
-            return app;
+                ApiError? response;
+                HttpStatusCode statusCode;
+                string message;
+
+                (statusCode, message) = ex switch
+                {
+                    UnauthorizedAccessException => (HttpStatusCode.Forbidden, "You are not authorized"),
+                    KeyNotFoundException => (HttpStatusCode.NotFound, "Not Found "),
+                    ApplicationException => (HttpStatusCode.BadRequest, "Bad request"),
+                    _ => (HttpStatusCode.InternalServerError, ex.Message),
+                };
+
+                response = _env.IsDevelopment()
+                    ? new ApiError(
+                        (int)statusCode, message, ex.StackTrace?.ToString())
+                    : new ApiError(
+                        (int)statusCode, message);
+
+                _logger.LogError(ex, ex.Message);
+
+                context.Response.StatusCode = (int)statusCode;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(response.ToString());
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Middlewares;
 using BLL;
@@ -66,9 +67,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMigration();
+app.ConfigureExceptionHandler();
 
-app.UseErrorHandling();
+app.UseMigration();
 
 app.UseHttpsRedirection();
 
