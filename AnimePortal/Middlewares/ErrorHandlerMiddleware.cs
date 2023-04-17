@@ -3,7 +3,6 @@ using System.Net;
 
 namespace AnimePortalAuthServer.Middlewares
 {
-    //TODO
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
