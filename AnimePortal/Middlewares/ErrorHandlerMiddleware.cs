@@ -25,12 +25,7 @@ namespace AnimePortalAuthServer.Middlewares
             }
             catch (Exception ex)
             {
-
-                ApiError? response;
-                HttpStatusCode statusCode;
-                string message;
-
-                (statusCode, message) = ex switch
+                (HttpStatusCode statusCode, string message) = ex switch
                 {
                     UnauthorizedAccessException => (HttpStatusCode.Forbidden, "You are not authorized"),
                     KeyNotFoundException => (HttpStatusCode.NotFound, "Not Found "),
@@ -38,7 +33,7 @@ namespace AnimePortalAuthServer.Middlewares
                     _ => (HttpStatusCode.InternalServerError, ex.Message),
                 };
 
-                response = _env.IsDevelopment()
+                ApiError response = _env.IsDevelopment()
                     ? new ApiError(
                         (int)statusCode, message, ex.StackTrace?.ToString())
                     : new ApiError(
