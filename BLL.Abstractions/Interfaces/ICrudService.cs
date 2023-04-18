@@ -1,7 +1,7 @@
 ﻿using Core.DB;
 using System.Linq.Expressions;
 
-namespace BLL.Abstractions
+namespace BLL.Abstractions.Interfaces
 {
     public interface ICrudService<T> where T : BaseEntity
     {

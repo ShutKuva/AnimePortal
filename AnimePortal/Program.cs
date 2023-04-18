@@ -2,7 +2,7 @@ using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Middlewares;
 using BLL;
-using BLL.Abstractions;
+using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;

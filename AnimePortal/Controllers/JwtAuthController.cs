@@ -1,4 +1,4 @@
-﻿using BLL.Abstractions;
+﻿using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
 using Core.Abstractions.DTOs.Interfaces;
 using Core.DB;

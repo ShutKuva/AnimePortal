@@ -1,4 +1,4 @@
-﻿using BLL.Abstractions;
+﻿using BLL.Abstractions.Interfaces;
 using Core.DB;
 using DAL;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
