@@ -1,7 +1,7 @@
 ﻿using Core.Abstractions.DTOs.Interfaces;
 using Core.DTOs.Jwt;
 
-namespace BLL.Abstractions
+namespace BLL.Abstractions.Interfaces
 {
     public interface IUserManipulator<T>
     {

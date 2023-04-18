@@ -1,4 +1,4 @@
-﻿using BLL.Abstractions;
+﻿using BLL.Abstractions.Interfaces;
 using Core.ClaimNames;
 using Core.DB;
 using Core.DI;
