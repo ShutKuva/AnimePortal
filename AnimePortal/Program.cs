@@ -4,12 +4,14 @@ using AnimePortalAuthServer.Middlewares;
 using BLL;
 using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
+using CloudinaryDotNet;
 using Core.DB;
 using Core.DI;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,7 +57,7 @@ builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
 
 //Configurations
 builder.Services.Configure<JwtConfigurations>(builder.Configuration.GetSection("JWT"));
-
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 //Mapper
 builder.Services.AddAutoMapper(typeof(Program));
 

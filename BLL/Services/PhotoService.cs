@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using BLL.Abstractions.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Core.DI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace BLL.Services
 {
@@ -15,11 +17,13 @@ namespace BLL.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        public PhotoService(IConfiguration config)
+        public PhotoService(IOptions<CloudinarySettings> cloudinaryConfig)
         {
-            Account account = new(config.GetSection("CloudinarySettings:CloudName").Value,
-                config.GetSection("CloudinarySettings:ApiKey").Value,
-                config.GetSection("ASPNETCORE_CloudinarySettings:ApiSecret").Value);
+            Account account = new(
+                cloudinaryConfig.Value.CloudName,
+                cloudinaryConfig.Value.ApiKey,
+                cloudinaryConfig.Value.ApiSecret);
+            _cloudinary = new Cloudinary(account);
             _cloudinary = new Cloudinary(account);
         }
 
@@ -38,11 +42,10 @@ namespace BLL.Services
             return uploadResult;
         }
 
-        public async Task<DeletionResult> DeletePhotoAsync(string cloudinaryId)
+        public Task<DeletionResult> DeletePhotoAsync(string cloudinaryId)
         {
-            DeletionParams deleteParams = new (cloudinaryId);
-            var result = await _cloudinary.DestroyAsync(deleteParams);
-            return result;
+            DeletionParams deleteParams = new(cloudinaryId);
+            return _cloudinary.DestroyAsync(deleteParams);
         }
     }
 }
