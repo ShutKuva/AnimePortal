@@ -19,10 +19,12 @@ namespace BLL.Services
 
         public PhotoService(IOptions<CloudinarySettings> cloudinaryConfig)
         {
+            CloudinarySettings cloudinaryConfiguration = cloudinaryConfig.Value ?? throw new ArgumentNullException(nameof(cloudinaryConfig));
+
             Account account = new(
-                cloudinaryConfig.Value.CloudName,
-                cloudinaryConfig.Value.ApiKey,
-                cloudinaryConfig.Value.ApiSecret);
+                cloudinaryConfiguration.CloudName,
+                cloudinaryConfiguration.ApiKey,
+                cloudinaryConfiguration.ApiSecret);
             _cloudinary = new Cloudinary(account);
             _cloudinary = new Cloudinary(account);
         }
