@@ -1,17 +1,14 @@
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
-using AnimePortalAuthServer.Middlewares;
 using BLL;
 using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
-using CloudinaryDotNet;
 using Core.DB;
 using Core.DI;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
