@@ -38,7 +38,6 @@ namespace BLL.Jwt
             return new JwtUserDTO
             {
                 Token = handler.WriteToken(token),
-                RefreshToken = user.RefreshToken
             };
         }
 

@@ -6,7 +6,7 @@ namespace AnimePortalAuthServer.Extension
 {
     public static class ExceptionMiddlewareExtension
     {
-        public static void ConfigureExceptionHandler(this WebApplication app)
+        public static void UseExceptionHandler(this WebApplication app)
         {
             app.UseMiddleware<ErrorHandlerMiddleware>();
         }
