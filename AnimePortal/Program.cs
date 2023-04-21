@@ -53,7 +53,25 @@ builder.Services.AddScoped<JWTTokensManipulator>();
 builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
 
 //Configurations
-builder.Services.Configure<JwtConfigurations>(builder.Configuration.GetSection("JWT"));
+builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        jwtConfigurations.Audience = builder.Configuration["JWT:Audience"];
+        jwtConfigurations.Issuer = builder.Configuration["JWT:Issuer"];
+        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT:Lifetime"]);
+        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT:RefreshLifetime"]);
+        jwtConfigurations.SecretCode = builder.Configuration["JWT:SecretCode"];
+    }
+    else
+    {
+        jwtConfigurations.Audience = builder.Configuration["JWT_AUDIENCE"];
+        jwtConfigurations.Issuer = builder.Configuration["JWT_ISSUER"];
+        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT_LIFETIME"]);
+        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT_REFRESH_LIFETIME"]);
+        jwtConfigurations.SecretCode = builder.Configuration["JWT_SECRET_CODE"];
+    }
+});
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 //Mapper
 builder.Services.AddAutoMapper(typeof(Program));
