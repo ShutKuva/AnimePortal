@@ -18,6 +18,8 @@ namespace DAL
         }
 
         public IUserRepository UserRepository => new UserRepository(_context);
+        public IAnimePreviewRepository AnimePreviewRepository => new AnimePreviewRepository(_context);
+
         public void SaveChanges()
         {
             _context.SaveChanges();
