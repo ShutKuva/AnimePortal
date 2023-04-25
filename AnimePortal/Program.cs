@@ -3,6 +3,7 @@ using AnimePortalAuthServer.Extensions;
 using BLL;
 using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
+using BLL.Services;
 using Core.DB;
 using Core.DI;
 using DAL;
@@ -10,6 +11,7 @@ using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +53,7 @@ builder.Services.AddScoped<JwtGeneralHelper>();
 builder.Services.AddScoped<JwtRefresher>();
 builder.Services.AddScoped<JWTTokensManipulator>();
 builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
+builder.Services.AddScoped<AnimeService>();
 
 //Configurations
 builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
