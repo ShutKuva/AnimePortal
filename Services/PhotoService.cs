@@ -1,12 +1,11 @@
-﻿
-using BLL.Abstractions.Interfaces;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Core.DI;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Services.Abstraction;
 
-namespace BLL.Services
+namespace Services
 {
     public class PhotoService : IPhotoService
     {
@@ -29,7 +28,7 @@ namespace BLL.Services
             var uploadResult = new ImageUploadResult();
             if (photo.Length > 0)
             {
-                await using Stream stream = photo.OpenReadStream();
+                await using var stream = photo.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(photo.FileName, stream),
