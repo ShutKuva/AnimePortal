@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DAL.Abstractions\DAL.Abstractions.csproj" />
     <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
   </ItemGroup>
 

@@ -1,34 +1,52 @@
-﻿using Core.DB;
+﻿using AutoMapper;
+using Core.DB;
 using Core.DTOs.Anime;
+using DAL.Abstractions.Interfaces;
 using Services.Abstraction.Interfaces;
 
 namespace Services
 {
     public class AnimeService:IAnimeService
     {
-        public Task Create(Anime anime)
+        private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
+
+        public AnimeService(IUnitOfWork uow, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _uow = uow;
+            _mapper = mapper;
         }
 
-        public Task<Anime> GetAnime(Anime anime)
+        public async Task Create(Anime? anime)
         {
-            throw new NotImplementedException();
+            if (anime != null)
+            {
+                await _uow.AnimeRepository.CreateAsync(anime);
+            }
         }
 
-        public Task<AnimePreview> GetAnimePreview(Anime anime)
+        public async Task<Anime?> GetAnime(int animeId)
         {
-            throw new NotImplementedException();
+            return await _uow.AnimeRepository.ReadAsync(animeId);
         }
 
-        public Task DeleteAnime(int animeId)
+        public async Task<AnimePreview?> GetAnimePreview(int animeId)
         {
-            throw new NotImplementedException();
+            var anime = await _uow.AnimeRepository.ReadAsync(animeId);
+            var animePreview = _mapper.Map<AnimePreview>(anime);
+            return animePreview;
+        }
+
+        public async Task DeleteAnime(int animeId)
+        {
+            await _uow.AnimeRepository.DeleteAsync(animeId);
         }
 
         public Task<ICollection<AnimePreview>> GetAnimePreviews(int quantity)
         {
-            throw new NotImplementedException();
+            var animes = _uow.AnimeRepository.GetAnimeByCount(quantity);
+            var animePreviews = _mapper.Map<ICollection<AnimePreview>>(animes);
+            return Task.FromResult(animePreviews);
         }
     }
 }
