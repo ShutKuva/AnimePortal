@@ -9,6 +9,7 @@ namespace DAL.Abstractions.Interfaces
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
+        IAnimeRepository AnimeRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }
