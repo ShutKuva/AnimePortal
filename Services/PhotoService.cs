@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using BLL.Abstractions.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Core.DI;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace BLL.Services
@@ -34,7 +29,7 @@ namespace BLL.Services
             var uploadResult = new ImageUploadResult();
             if (photo.Length > 0)
             {
-                await using var stream = photo.OpenReadStream();
+                await using Stream stream = photo.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(photo.FileName, stream),

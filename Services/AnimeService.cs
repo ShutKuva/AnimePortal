@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.DB;
+﻿using Core.DB;
 using Core.DTOs.Anime;
 using Services.Abstraction.Interfaces;
 
