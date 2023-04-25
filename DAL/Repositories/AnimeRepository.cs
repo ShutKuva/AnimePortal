@@ -71,6 +71,12 @@ namespace DAL.Repositories
                 _context.Animes.Remove(anime);
             }
         }
+
+        public IQueryable<Anime> GetAnimeByCount(int count)
+        {
+            var animes = _context.Animes.Take(count);
+            return animes;
+        }
     }
 }
 
