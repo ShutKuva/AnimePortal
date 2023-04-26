@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    [Migration("20230422110522_AnimePreview")]
-    partial class AnimePreview
+    [Migration("20230426095118_AnimePortal")]
+    partial class AnimePortal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,10 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
@@ -44,16 +48,48 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Placement")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Tags")
+                    b.Property<int>("PostedBy")
                         .HasColumnType("integer");
+
+                    b.Property<float?>("Rating")
+                        .HasColumnType("real");
+
+                    b.Property<int?>("Tags")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Animes");
+                });
+
+            modelBuilder.Entity("Core.DB.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AnimeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -61,7 +97,9 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AnimePreviews");
+                    b.HasIndex("AnimeId");
+
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("Core.DB.User", b =>
@@ -97,6 +135,18 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Core.DB.Photo", b =>
+                {
+                    b.HasOne("Core.DB.Anime", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("AnimeId");
+                });
+
+            modelBuilder.Entity("Core.DB.Anime", b =>
+                {
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }

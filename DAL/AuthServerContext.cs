@@ -1,5 +1,6 @@
 ﻿using Core.DB;
 using Core.DTOs;
+using Core.DTOs.Anime;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL
@@ -8,7 +9,6 @@ namespace DAL
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Anime> Animes { get; set; }
-
         public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options) { }
     }
 }

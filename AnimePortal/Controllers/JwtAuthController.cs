@@ -1,4 +1,5 @@
-﻿using BLL.Abstractions.Interfaces;
+﻿using AnimePortalAuthServer.Controllers;
+using BLL.Abstractions.Interfaces;
 using BLL.Jwt;
 using Core.Abstractions.DTOs.Interfaces;
 using Core.DB;
@@ -7,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnimePortal.Controllers
 {
-    [Route("api/auth")]
-    [ApiController]
-    public class JwtAuthController : ControllerBase
+    public class JwtAuthController : BaseController
     {
         private readonly IUserManipulator<User> _userManipulator;
         private readonly JwtRefresher _jwtRefresher;

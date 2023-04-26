@@ -32,7 +32,7 @@ namespace DAL.Repositories
 
         public async Task<Anime?> ReadAsync(int id)
         {
-            var user = await _context.Animes.FirstOrDefaultAsync(user => user.Id == id);
+            var user = await _context.Animes.Include(p=> p.Photos).FirstOrDefaultAsync(user => user.Id == id);
             return user;
         }
 
@@ -58,7 +58,6 @@ namespace DAL.Repositories
             else
             {
                 EntityEntry<Anime> entityEntry = _context.Entry(oldEntity);
-
                 entityEntry.CurrentValues.SetValues(entity);
             }
         }
@@ -74,7 +73,7 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            var animes = _context.Animes.Take(count);
+            var animes = _context.Animes.Include(p =>p.Photos).Take(count);
             return animes;
         }
     }
