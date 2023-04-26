@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.DB;
 using Core.DTOs.Anime;
+using Core.Enums;
 using Core.Exceptions;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -91,7 +92,7 @@ namespace Services
             await _uow.SaveChangesAsync();
         }
 
-        public async Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId)
+        public async Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots)
         {
             var result = await _photoService.UploadPhotoAsync(file);
             if (result.Error != null)

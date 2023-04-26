@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.DB;
 using Core.DTOs.Anime;
+using Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction.Interfaces;
 
@@ -48,10 +49,10 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(animePreview);
         }
 
-        [HttpPost("add/photo/{animeId}")]
-        public async Task<ActionResult<Photo>> AddAnimePhoto(IFormFile file, int animeId)
+        [HttpPost("add/photo/{animeId}/{photoType}")]
+        public async Task<ActionResult<Photo>> AddAnimePhoto(IFormFile file, int animeId, PhotoTypes photoType)
         {
-            var photo = await _animeService.AddAnimePhotoAsync(file, animeId);
+            var photo = await _animeService.AddAnimePhotoAsync(file, animeId, photoType);
             return Ok(photo);
         }
 
