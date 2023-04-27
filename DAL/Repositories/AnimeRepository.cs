@@ -15,30 +15,15 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        public void Create(Anime entity)
-        {
-            _context.Animes.Add(entity);
-        }
-
         public async Task CreateAsync(Anime entity)
         {
             await _context.Animes.AddAsync(entity);
-        }
-
-        public Anime? Read(int id)
-        {
-            return _context.Animes.FirstOrDefault(user => user.Id == id);
         }
 
         public async Task<Anime?> ReadAsync(int id)
         {
             var user = await _context.Animes.Include(p=> p.Photos).FirstOrDefaultAsync(user => user.Id == id);
             return user;
-        }
-
-        public IEnumerable<Anime?> ReadByCondition(Expression<Func<Anime, bool>> predicate)
-        {
-            return _context.Set<Anime>().Where(predicate).ToList();
         }
 
         public async Task<IEnumerable<Anime>> ReadByConditionAsync(Expression<Func<Anime, bool>> predicate)
@@ -73,7 +58,7 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            var animes = _context.Animes.Include(p =>p.Photos).Take(count);
+            IQueryable<Anime> animes = _context.Animes.Include(p =>p.Photos).Take(count);
             return animes;
         }
     }

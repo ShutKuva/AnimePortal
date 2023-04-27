@@ -20,30 +20,15 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        public void Create(User entity)
-        {
-            _context.Users.Add(entity);
-        }
-
         public async Task CreateAsync(User entity)
         {
             await _context.Users.AddAsync(entity);
-        }
-
-        public User? Read(int id)
-        {
-            return _context.Users.FirstOrDefault(user => user.Id == id);
         }
 
         public async Task<User?> ReadAsync(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
             return user;
-        }
-
-        public IEnumerable<User?> ReadByCondition(Expression<Func<User, bool>> predicate)
-        {
-            return _context.Set<User>().Where(predicate).ToList();
         }
 
         public async Task<IEnumerable<User>> ReadByConditionAsync(Expression<Func<User, bool>> predicate)
