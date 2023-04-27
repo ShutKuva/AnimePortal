@@ -11,7 +11,7 @@ namespace Core.DTOs.Anime
         public string Duration { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } 
         public VideoTags Tags { get; set; }
     }
 }

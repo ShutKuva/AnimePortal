@@ -29,6 +29,7 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(anime), "Anime cannot be null");
             }
+
             await _uow.AnimeRepository.CreateAsync(anime);
             await _uow.SaveChangesAsync();
         }
@@ -70,6 +71,7 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(anime), "Anime cannot be null");
             }
+
             await _uow.AnimeRepository.UpdateAsync(anime);
             await _uow.SaveChangesAsync();
 
@@ -91,7 +93,6 @@ namespace Services
                 {
                     continue;
                 }
-
             }
 
             await _uow.SaveChangesAsync();

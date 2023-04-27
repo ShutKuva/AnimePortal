@@ -37,8 +37,9 @@ namespace AnimePortalAuthServer.Controllers
         public async Task<CreatedResult> CreateAnimeAsync([FromBody] AnimeDto animeDto)
         {
             var anime = _mapper.Map<Anime>(animeDto);
-            await _animeService.CreateAsync(anime);
+            anime.Date = DateTime.SpecifyKind(anime.Date, DateTimeKind.Utc);
 
+            await _animeService.CreateAsync(anime);
             return Created(string.Empty, anime);
         }
 
@@ -47,6 +48,7 @@ namespace AnimePortalAuthServer.Controllers
         {
             Anime anime = _mapper.Map<Anime>(animeDto);
             anime.Id = animeId;
+            anime.Date = DateTime.SpecifyKind(anime.Date, DateTimeKind.Utc);
 
             await _animeService.UpdateAnimeAsync(anime);
             AnimePreview animePreview = _mapper.Map<AnimePreview>(await _animeService.GetAnimeAsync(animeId));
