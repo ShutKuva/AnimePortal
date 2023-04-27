@@ -17,11 +17,11 @@ namespace AnimePortalAuthServer.Controllers
             _animeService = animeService;
             _mapper = mapper;
         }
+
         [HttpGet("preview/{animeId}")]
         public async Task<ActionResult<AnimePreview>> GetAnimePreviewAsync(int animeId)
         {
-            var anime = await _animeService.GetAnimeAsync(animeId);
-            var animePreview = _mapper.Map<AnimePreview>(anime);
+            AnimePreview animePreview = await _animeService.GetAnimePreviewAsync(animeId);
             return Ok(animePreview);
         }
 
@@ -32,20 +32,25 @@ namespace AnimePortalAuthServer.Controllers
 
             return Ok(animes);
         }
+
         [HttpPost("create")]
         public async Task<CreatedResult> CreateAnimeAsync([FromBody] AnimeDto animeDto)
         {
             var anime = _mapper.Map<Anime>(animeDto);
             await _animeService.CreateAsync(anime);
+
             return Created(string.Empty, anime);
         }
 
-        [HttpPost("update")]
-        public async Task<ActionResult<AnimePreview>> UpdateAnimeAsync([FromBody] AnimeDto animeDto)
+        [HttpPost("update/{animeId}")]
+        public async Task<ActionResult<AnimePreview>> UpdateAnimeAsync([FromBody] AnimeDto animeDto, int animeId)
         {
             Anime anime = _mapper.Map<Anime>(animeDto);
+            anime.Id = animeId;
+
             await _animeService.UpdateAnimeAsync(anime);
-            var animePreview = _mapper.Map<AnimePreview>(anime);
+            AnimePreview animePreview = _mapper.Map<AnimePreview>(await _animeService.GetAnimeAsync(animeId));
+
             return Ok(animePreview);
         }
 
@@ -69,7 +74,5 @@ namespace AnimePortalAuthServer.Controllers
             await _animeService.DeleteAnimePhotoAsync(animeId, photoId);
             return Ok("Successfully!");
         }
-
-
     }
 }

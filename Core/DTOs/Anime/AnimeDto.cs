@@ -5,7 +5,6 @@ namespace Core.DTOs.Anime
 {
     public class AnimeDto
     {
-        public int? Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Placement { get; set; } = string.Empty;
         public string Duration { get; set; } = string.Empty;

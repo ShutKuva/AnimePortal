@@ -16,7 +16,6 @@ namespace Services
         private readonly IPhotoService _photoService;
         private readonly IMapper _mapper;
 
-
         public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService)
         {
             _uow = uow;
@@ -44,8 +43,8 @@ namespace Services
 
         public async Task<AnimePreview> GetAnimePreviewAsync(int animeId)
         {
-            var anime = await _uow.AnimeRepository.ReadAsync(animeId) ?? throw new NotFoundException($"Resource with id {animeId} was not found.");
-
+            var anime = await _uow.AnimeRepository.ReadAsync(animeId) ??
+                        throw new NotFoundException($"Resource with id {animeId} was not found.");
 
             var animePreview = _mapper.Map<AnimePreview>(anime);
             return animePreview;
@@ -53,7 +52,8 @@ namespace Services
 
         public Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quantity)
         {
-            var animes = _uow.AnimeRepository.GetAnimeByCount(quantity) ?? throw new NotFoundException("For this query, nothing was found"); ;
+            var animes = _uow.AnimeRepository.GetAnimeByCount(quantity) ??
+                         throw new NotFoundException("For this query, nothing was found");
 
             if (!animes.Any())
             {
@@ -66,8 +66,13 @@ namespace Services
 
         public async Task<Anime> UpdateAnimeAsync(Anime anime)
         {
+            if (anime == null)
+            {
+                throw new ArgumentNullException(nameof(anime), "Anime cannot be null");
+            }
             await _uow.AnimeRepository.UpdateAsync(anime);
             await _uow.SaveChangesAsync();
+
             return anime;
         }
         public async Task DeleteAnimeAsync(int animeId)
@@ -117,10 +122,12 @@ namespace Services
         public async Task DeleteAnimePhotoAsync(int animeId, int photoId)
         {
             var anime = await GetAnimeAsync(animeId);
-            var photo = anime.Photos!.FirstOrDefault(p => p.Id == photoId) ?? throw new NotFoundException($"Resource with id {photoId} was not found."); ;
+            var photo = anime.Photos!.FirstOrDefault(p => p.Id == photoId) ??
+                        throw new NotFoundException($"Resource with id {photoId} was not found.");
 
             anime.Photos?.Remove(photo);
             await _photoService.DeletePhotoAsync(photo.PublicId);
+
             await UpdateAnimeAsync(anime);
         }
 
