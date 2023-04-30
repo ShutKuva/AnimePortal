@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Abstractions.Interfaces;
+﻿using DAL.Abstractions.Interfaces;
 using DAL.Repositories;
 
 namespace DAL
@@ -16,8 +11,10 @@ namespace DAL
         {
             _context = context;
         }
-
         public IUserRepository UserRepository => new UserRepository(_context);
+        public IAnimeRepository AnimeRepository => new AnimeRepository(_context);
+        public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
+
         public void SaveChanges()
         {
             _context.SaveChanges();

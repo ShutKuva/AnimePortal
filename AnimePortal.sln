@@ -3,21 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimePortalAuthServer", "AnimePortal\AnimePortalAuthServer.csproj", "{B5068F22-2504-4973-B343-98751ED33713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimePortalAuthServer", "AnimePortal\AnimePortalAuthServer.csproj", "{B5068F22-2504-4973-B343-98751ED33713}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{BBBA7CCE-B2E5-4E6E-AB28-930B23954068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{BBBA7CCE-B2E5-4E6E-AB28-930B23954068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{563624CC-2049-43FE-BA5D-1E411BA08FCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{563624CC-2049-43FE-BA5D-1E411BA08FCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{D8E32896-FE4D-489D-86EA-6FC22633E914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLL", "BLL\BLL.csproj", "{D8E32896-FE4D-489D-86EA-6FC22633E914}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL.Abstractions", "BLL.Abstractions\BLL.Abstractions.csproj", "{9FEB132C-C982-40B3-A7F2-966BE0301B68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLL.Abstractions", "BLL.Abstractions\BLL.Abstractions.csproj", "{9FEB132C-C982-40B3-A7F2-966BE0301B68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Abstractions", "Core.Abstractions\Core.Abstractions.csproj", "{A3038B58-8F3F-48F3-878A-F2B06DD35BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Abstractions", "Core.Abstractions\Core.Abstractions.csproj", "{A3038B58-8F3F-48F3-878A-F2B06DD35BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.MongoDb", "DAL.MongoDb\DAL.MongoDb.csproj", "{EF6ED40B-0EE9-46F3-891A-849DF709E50B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.MongoDb", "DAL.MongoDb\DAL.MongoDb.csproj", "{EF6ED40B-0EE9-46F3-891A-849DF709E50B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.Abstractions", "DAL.Abstractions\DAL.Abstractions.csproj", "{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.Abstractions", "DAL.Abstractions\DAL.Abstractions.csproj", "{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{62F58D81-30A4-4300-8701-6CE8384F9D42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Abstraction", "Services.Abstraction\Services.Abstraction.csproj", "{13C45C8D-2C19-47B8-B429-D1B89B255F39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62F58D81-30A4-4300-8701-6CE8384F9D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F58D81-30A4-4300-8701-6CE8384F9D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F58D81-30A4-4300-8701-6CE8384F9D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F58D81-30A4-4300-8701-6CE8384F9D42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
