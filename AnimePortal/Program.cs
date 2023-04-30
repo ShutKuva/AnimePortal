@@ -1,21 +1,32 @@
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
+using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
+using BLL.Abstractions.Interfaces.Adapters;
+using BLL.Adapters;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Services;
+using Services.Abstraction;
+using Services.Abstraction.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(
+        new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -51,6 +62,9 @@ builder.Services.AddScoped<JwtGeneralHelper>();
 builder.Services.AddScoped<JwtRefresher>();
 builder.Services.AddScoped<JWTTokensManipulator>();
 builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
 
 //Configurations
 builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
@@ -73,6 +87,8 @@ builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
     }
 });
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+
 //Mapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -83,6 +99,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseExceptionHandler();
 

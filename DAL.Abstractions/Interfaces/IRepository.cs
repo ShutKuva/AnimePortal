@@ -5,11 +5,8 @@ namespace DAL.Abstractions.Interfaces;
 
 public interface IRepository<T> where T : BaseEntity
 {
-    void Create(T entity);
     Task CreateAsync(T entity);
-    T? Read(int id);
     Task<T?> ReadAsync(int id);
-    IEnumerable<T?> ReadByCondition(Expression<Func<T, bool>> predicate);
     Task<IEnumerable<T>> ReadByConditionAsync(Expression<Func<T, bool>> predicate);
     Task UpdateAsync(T entity);
     Task DeleteAsync(int id);

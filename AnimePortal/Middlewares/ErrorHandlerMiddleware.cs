@@ -1,5 +1,6 @@
 ﻿using AnimePortalAuthServer.Errors;
 using System.Net;
+using Core.Exceptions;
 
 namespace AnimePortalAuthServer.Middlewares
 {
@@ -27,8 +28,9 @@ namespace AnimePortalAuthServer.Middlewares
                 (HttpStatusCode statusCode, string message) = ex switch
                 {
                     UnauthorizedAccessException => (HttpStatusCode.Forbidden, "You are not authorized"),
-                    KeyNotFoundException => (HttpStatusCode.NotFound, "Not Found "),
                     ApplicationException => (HttpStatusCode.BadRequest, "Bad request"),
+                    NotFoundException => (HttpStatusCode.NotFound, ex.Message),
+                    ArgumentNullException => (HttpStatusCode.BadRequest,ex.Message),
                     _ => (HttpStatusCode.InternalServerError, ex.Message),
                 };
 
