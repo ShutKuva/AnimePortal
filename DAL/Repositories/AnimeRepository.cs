@@ -62,11 +62,6 @@ namespace DAL.Repositories
             return animes;
         }
 
-        public async Task<Anime?> GetAnimeByName(string animeName)
-        {
-            var anime = await _context.Animes.FirstOrDefaultAsync(a=> a.Title == animeName);
-            return anime;
-        }
     }
 }
 

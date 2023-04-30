@@ -126,7 +126,10 @@ namespace Services
             await _photoService.DeletePhotoAsync(photoId);
         }
 
-        private async Task<Anime?> GetAnimeByNameAsync(string animeName) =>
-            await _uow.AnimeRepository.GetAnimeByName(animeName);
+        private async Task<Anime?> GetAnimeByNameAsync(string animeName)
+        {
+            var anime = await _uow.AnimeRepository.ReadByConditionAsync(a => a.Title == animeName);
+            return anime.FirstOrDefault();
+        }
     }
 }
