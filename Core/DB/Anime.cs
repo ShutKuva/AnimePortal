@@ -12,7 +12,14 @@ namespace Core.DB
         public string? VideoUrl { get; set; } = string.Empty;
         public float? Rating { get; set; } = 0.0f;
         public ICollection<Photo>? Photos { get; set; } = new List<Photo>();
-        public DateTime Date { get; set; }
+
+        private DateTime _date;
+        public DateTime Date
+        {
+            get => _date;
+            set => _date = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+
         public VideoTags? Tags { get; set; }
         public int PostedBy { get; set; }
     }

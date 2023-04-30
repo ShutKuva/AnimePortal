@@ -3,6 +3,8 @@ using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
+using BLL.Abstractions.Interfaces.Adapters;
+using BLL.Adapters;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;
@@ -62,6 +64,7 @@ builder.Services.AddScoped<JWTTokensManipulator>();
 builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
 
 //Configurations
 builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>

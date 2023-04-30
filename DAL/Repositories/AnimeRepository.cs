@@ -61,6 +61,12 @@ namespace DAL.Repositories
             IQueryable<Anime> animes = _context.Animes.Include(p =>p.Photos).Take(count);
             return animes;
         }
+
+        public async Task<Anime?> GetAnimeByName(string animeName)
+        {
+            var anime = await _context.Animes.FirstOrDefaultAsync(a=> a.Title == animeName);
+            return anime;
+        }
     }
 }
 

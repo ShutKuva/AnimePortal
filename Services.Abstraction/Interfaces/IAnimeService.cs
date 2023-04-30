@@ -7,13 +7,13 @@ namespace Services.Abstraction.Interfaces
 {
     public interface IAnimeService
     {
-        Task CreateAsync(Anime? anime);
+        Task CreateAsync(AnimeDto? anime);
         Task<Anime> GetAnimeAsync(int animeId);
-        Task<AnimePreview> GetAnimePreviewAsync(int animeId);
-        Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quantity);
+        Task<IQueryable<Anime>> GetAnimeByCountAsync(int quantity);
         Task<Anime> UpdateAnimeAsync(Anime anime);
-        Task DeleteAnimeAsync(int animeId);
+        Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId);
         Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots);
+        Task DeleteAnimeAsync(int animeId);
         Task DeleteAnimePhotoAsync(int animeId, int photoId);
 
     }

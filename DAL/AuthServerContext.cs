@@ -9,6 +9,7 @@ namespace DAL
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Anime> Animes { get; set; }
+        public DbSet<Photo> Photos { get; set; }
         public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options) { }
     }
 }

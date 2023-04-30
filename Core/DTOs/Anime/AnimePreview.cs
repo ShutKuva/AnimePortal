@@ -1,5 +1,4 @@
-﻿using Core.DB;
-using Core.Enums;
+﻿using Core.Enums;
 
 namespace Core.DTOs.Anime
 {

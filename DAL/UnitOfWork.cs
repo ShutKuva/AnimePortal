@@ -13,6 +13,7 @@ namespace DAL
         }
         public IUserRepository UserRepository => new UserRepository(_context);
         public IAnimeRepository AnimeRepository => new AnimeRepository(_context);
+        public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
 
         public void SaveChanges()
         {

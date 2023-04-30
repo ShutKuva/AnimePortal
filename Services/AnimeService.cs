@@ -23,16 +23,24 @@ namespace Services
             _photoService = photoService;
         }
 
-        public async Task CreateAsync(Anime? anime)
+        public async Task CreateAsync(AnimeDto? animeDto)
         {
-            if (anime == null)
+            if (animeDto == null)
             {
-                throw new ArgumentNullException(nameof(anime), "Anime cannot be null");
+                throw new ArgumentNullException(nameof(animeDto), "Anime cannot be null");
             }
 
+            Anime? anime = await GetAnimeByNameAsync(animeDto.Title);
+            if (anime != null)
+            {
+                throw new InvalidOperationException($"Anime with Title { anime.Title } already exists.");
+            }
+
+            anime = _mapper.Map<Anime>(animeDto);
             await _uow.AnimeRepository.CreateAsync(anime);
             await _uow.SaveChangesAsync();
         }
+
         public async Task<Anime> GetAnimeAsync(int animeId)
         {
             Anime anime = await _uow.AnimeRepository.ReadAsync(animeId) ??
@@ -41,16 +49,7 @@ namespace Services
             return anime;
         }
 
-        public async Task<AnimePreview> GetAnimePreviewAsync(int animeId)
-        {
-            Anime anime = await _uow.AnimeRepository.ReadAsync(animeId) ??
-                        throw new NotFoundException($"Resource with id {animeId} was not found.");
-
-            var animePreview = _mapper.Map<AnimePreview>(anime);
-            return animePreview;
-        }
-
-        public Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quantity)
+        public Task<IQueryable<Anime>> GetAnimeByCountAsync(int quantity)
         {
             IQueryable<Anime> animes = _uow.AnimeRepository.GetAnimeByCount(quantity) ??
                                        throw new NotFoundException("For this query, nothing was found");
@@ -59,9 +58,8 @@ namespace Services
             {
                 throw new NotFoundException("For this query, nothing was found");
             }
-            var animePreviews = _mapper.Map<ICollection<AnimePreview>>(animes);
 
-            return Task.FromResult(animePreviews);
+            return Task.FromResult(animes);
         }
 
         public async Task<Anime> UpdateAnimeAsync(Anime anime)
@@ -76,6 +74,14 @@ namespace Services
 
             return anime;
         }
+
+        public Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId)
+        {
+            var anime = _mapper.Map<Anime>(animeDto);
+            anime.Id = animeId;
+            return UpdateAnimeAsync(anime);
+        }
+
         public async Task DeleteAnimeAsync(int animeId)
         {
             Anime anime = await GetAnimeAsync(animeId);
@@ -86,11 +92,11 @@ namespace Services
             {
                 try
                 {
-                    await _photoService.DeletePhotoAsync(photo.PublicId);
+                    await _photoService.DeletePhotoAsync(photo.Id);
                 }
                 catch
                 {
-                    continue;
+                    // ignored
                 }
             }
 
@@ -99,22 +105,11 @@ namespace Services
 
         public async Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots)
         {
-            var result = await _photoService.UploadPhotoAsync(file);
-            if (result.Error != null)
-            {
-                throw new InvalidOperationException(result.Error.Message);
-            }
-
             Anime anime = await GetAnimeAsync(animeId);
-            var photo = new Photo()
-            {
-                ImageUrl = result.Url.AbsoluteUri,
-                Title = result.OriginalFilename,
-                PublicId = result.PublicId
-            };
+            var photo = await _photoService.UploadPhotoAsync(file);
 
-            anime.Photos?.Add(photo);
-            await UpdateAnimeAsync(anime!);
+            anime.Photos!.Add(photo);
+            await _uow.SaveChangesAsync();
 
             return photo;
         }
@@ -122,15 +117,16 @@ namespace Services
         public async Task DeleteAnimePhotoAsync(int animeId, int photoId)
         {
             Anime anime = await GetAnimeAsync(animeId);
-            Photo photo = anime.Photos!.FirstOrDefault(p => p.Id == photoId) ??
-                        throw new NotFoundException($"Resource with id {photoId} was not found.");
+            bool photoIsExist = anime.Photos!.Any(p => p.Id == photoId);
+            if (!photoIsExist)
+            {
+                throw new NotFoundException($"Resource with id {photoId} was not found in anime with {animeId}.");
+            }
 
-            anime.Photos?.Remove(photo);
-            await _photoService.DeletePhotoAsync(photo.PublicId);
-
-            await UpdateAnimeAsync(anime);
+            await _photoService.DeletePhotoAsync(photoId);
         }
 
-
+        private async Task<Anime?> GetAnimeByNameAsync(string animeName) =>
+            await _uow.AnimeRepository.GetAnimeByName(animeName);
     }
 }

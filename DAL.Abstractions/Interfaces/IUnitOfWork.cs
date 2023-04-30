@@ -10,6 +10,7 @@ namespace DAL.Abstractions.Interfaces
     {
         IUserRepository UserRepository { get; }
         IAnimeRepository AnimeRepository { get; }
+        IPhotoRepository PhotoRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }
