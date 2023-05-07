@@ -86,7 +86,21 @@ builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
         jwtConfigurations.SecretCode = builder.Configuration["JWT_SECRET_CODE"];
     }
 });
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        cloudinaryConfiguration.ApiKey = builder.Configuration["CloudinarySettings:ApiKey"];
+        cloudinaryConfiguration.ApiSecret = builder.Configuration["CloudinarySettings:ApiSecret"];
+        cloudinaryConfiguration.CloudName = builder.Configuration["CloudinarySettings:CloudName"];
+    }
+    else
+    {
+        cloudinaryConfiguration.ApiKey = builder.Configuration["CLOUDINARY_API_KEY"];
+        cloudinaryConfiguration.ApiSecret = builder.Configuration["CLOUDINARY_API_SECRET"];
+        cloudinaryConfiguration.CloudName = builder.Configuration["CLOUDINARY_CLOUD_NAME"];
+    }
+});
 
 
 //Mapper
