@@ -4,10 +4,12 @@ using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
 using BLL.Abstractions.Interfaces.Adapters;
+using BLL.Abstractions.Interfaces.Jwt;
 using BLL.Adapters;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;
+using Core.DTOs.Jwt;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -55,13 +57,11 @@ builder.Services.AddDbContext<AuthServerContext>(options =>
         options.UseNpgsql(builder.Configuration["AUTH_SERVER_CONNECTION_STRING"]);
     }
 });
-builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudForEntity<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<JwtGeneralHelper>();
-builder.Services.AddScoped<JwtRefresher>();
-builder.Services.AddScoped<JWTTokensManipulator>();
-builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
+builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
+
+builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();

@@ -1,26 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Core.DI;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic.FileIO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
-using Core.DI;
+using BLL.Abstractions.Interfaces.Jwt;
 
 namespace BLL.Jwt
 {
-    public class JWTTokensManipulator
+    public class JwtTokenHandler : IJwtTokenHandler
     {
         private readonly JwtConfigurations _jwtConfigurations;
+        private const string ALL_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        public JWTTokensManipulator(IOptions<JwtConfigurations> jwtConfigurations)
+        public JwtTokenHandler(IOptions<JwtConfigurations> jwtConfigurations)
         {
             _jwtConfigurations = jwtConfigurations.Value ?? throw new ArgumentNullException("There are no jwt configurations on server");
         }
 
         public JwtSecurityToken CreateToken(List<Claim> claims)
         {
-            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfigurations.SecretCode));
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.SecretCode));
 
             var token = new JwtSecurityToken(
                 claims: claims,
@@ -37,8 +37,11 @@ namespace BLL.Jwt
         {
             byte[] byteArray = new byte[64];
             Random rand = new Random();
-            rand.NextBytes(byteArray);
-            return Encoding.UTF8.GetString(byteArray);
+            for (int i = 0; i < byteArray.Length; i++)
+            {
+                byteArray[i] = (byte) ALL_CHARS[rand.Next(ALL_CHARS.Length)];
+            }
+            return Encoding.ASCII.GetString(byteArray);
         }
     }
 }

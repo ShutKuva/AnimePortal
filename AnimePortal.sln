@@ -19,9 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.MongoDb", "DAL.MongoDb\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.Abstractions", "DAL.Abstractions\DAL.Abstractions.csproj", "{D1AB5598-A855-4404-A4E8-CFB6CE9EEA8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{62F58D81-30A4-4300-8701-6CE8384F9D42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{62F58D81-30A4-4300-8701-6CE8384F9D42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Abstraction", "Services.Abstraction\Services.Abstraction.csproj", "{13C45C8D-2C19-47B8-B429-D1B89B255F39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Abstraction", "Services.Abstraction\Services.Abstraction.csproj", "{13C45C8D-2C19-47B8-B429-D1B89B255F39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapters", "Adapters\Adapters.csproj", "{E33EA87B-9A0B-4EF2-9921-6D018C67B714}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapters.Abstractions", "Adapters.Abstractions\Adapters.Abstractions.csproj", "{30C5D5A0-1926-4BE6-8B41-B831ADB080FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,14 @@ Global
 		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13C45C8D-2C19-47B8-B429-D1B89B255F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E33EA87B-9A0B-4EF2-9921-6D018C67B714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E33EA87B-9A0B-4EF2-9921-6D018C67B714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E33EA87B-9A0B-4EF2-9921-6D018C67B714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E33EA87B-9A0B-4EF2-9921-6D018C67B714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C5D5A0-1926-4BE6-8B41-B831ADB080FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C5D5A0-1926-4BE6-8B41-B831ADB080FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C5D5A0-1926-4BE6-8B41-B831ADB080FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C5D5A0-1926-4BE6-8B41-B831ADB080FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

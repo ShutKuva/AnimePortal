@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Adapters.Abstractions\Adapters.Abstractions.csproj" />
+    <ProjectReference Include="..\Adapters\Adapters.csproj" />
     <ProjectReference Include="..\BLL\BLL.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
