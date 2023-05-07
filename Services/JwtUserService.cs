@@ -86,14 +86,15 @@ namespace BLL.Jwt
 
         public async Task<JwtUserDto> ProcessUser(User user)
         {
-            user.RefreshToken = _tokenHandler.CreateRefreshToken();
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+            user.RefreshToken = handler.WriteToken(_tokenHandler.CreateRefreshToken());
             user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime).ToUniversalTime();
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
 
             JwtSecurityToken token = GenerateJwtTokenForUser(user);
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             return new JwtUserDto()
             {
@@ -110,7 +111,7 @@ namespace BLL.Jwt
                 new Claim(UserClaimNames.Id, user.Id.ToString())
             };
 
-            return _tokenHandler.CreateToken(claims);
+            return _tokenHandler.CreateAccessToken(claims);
         }
     }
 }

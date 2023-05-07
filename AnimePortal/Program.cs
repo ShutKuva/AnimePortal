@@ -73,17 +73,19 @@ builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
     {
         jwtConfigurations.Audience = builder.Configuration["JWT:Audience"];
         jwtConfigurations.Issuer = builder.Configuration["JWT:Issuer"];
-        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT:Lifetime"]);
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT:AccessLifetime"]);
         jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT:RefreshLifetime"]);
-        jwtConfigurations.SecretCode = builder.Configuration["JWT:SecretCode"];
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT:AccessSecretCode"];
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT:RefreshSecretCode"];
     }
     else
     {
         jwtConfigurations.Audience = builder.Configuration["JWT_AUDIENCE"];
         jwtConfigurations.Issuer = builder.Configuration["JWT_ISSUER"];
-        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT_LIFETIME"]);
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT_ACCESS_LIFETIME"]);
         jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT_REFRESH_LIFETIME"]);
-        jwtConfigurations.SecretCode = builder.Configuration["JWT_SECRET_CODE"];
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT_ACCESS_SECRET_CODE"];
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT_REFRESH_SECRET_CODE"];
     }
 });
 builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>

@@ -5,7 +5,7 @@ namespace BLL.Abstractions.Interfaces.Jwt
 {
     public interface IJwtTokenHandler
     {
-        JwtSecurityToken CreateToken(List<Claim> claims);
-        public string CreateRefreshToken();
+        JwtSecurityToken CreateAccessToken(List<Claim> claims);
+        JwtSecurityToken CreateRefreshToken();
     }
 }

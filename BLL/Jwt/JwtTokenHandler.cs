@@ -11,37 +11,39 @@ namespace BLL.Jwt
     public class JwtTokenHandler : IJwtTokenHandler
     {
         private readonly JwtConfigurations _jwtConfigurations;
-        private const string ALL_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         public JwtTokenHandler(IOptions<JwtConfigurations> jwtConfigurations)
         {
             _jwtConfigurations = jwtConfigurations.Value ?? throw new ArgumentNullException("There are no jwt configurations on server");
         }
 
-        public JwtSecurityToken CreateToken(List<Claim> claims)
+        public JwtSecurityToken CreateAccessToken(List<Claim> claims)
         {
-            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.SecretCode));
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.AccessSecretCode));
 
             var token = new JwtSecurityToken(
                 claims: claims,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
                 issuer: _jwtConfigurations.Issuer,
                 audience: _jwtConfigurations.Audience,
-                expires: DateTime.Now.AddHours(_jwtConfigurations.Lifetime)
+                expires: DateTime.Now.AddHours(_jwtConfigurations.AccessLifetime)
             );
 
             return token;
         }
 
-        public string CreateRefreshToken()
+        public JwtSecurityToken CreateRefreshToken()
         {
-            byte[] byteArray = new byte[64];
-            Random rand = new Random();
-            for (int i = 0; i < byteArray.Length; i++)
-            {
-                byteArray[i] = (byte) ALL_CHARS[rand.Next(ALL_CHARS.Length)];
-            }
-            return Encoding.ASCII.GetString(byteArray);
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.RefreshSecretCode));
+
+            var token = new JwtSecurityToken(
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
+                issuer: _jwtConfigurations.Issuer,
+                audience: _jwtConfigurations.Audience,
+                expires: DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime)
+            );
+
+            return token;
         }
     }
 }
