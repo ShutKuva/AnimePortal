@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnimePortalAuthServer.Extensions
 {
-    public static class MigratingMiddlwareClass
+    public static class MigratingMiddlware
     {
         public static WebApplication UseMigration(this WebApplication app)
         {

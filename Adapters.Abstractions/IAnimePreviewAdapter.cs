@@ -1,5 +1,4 @@
-﻿
-using Core.DTOs.Anime;
+﻿using Core.DTOs.Anime;
 
 namespace BLL.Abstractions.Interfaces.Adapters
 {

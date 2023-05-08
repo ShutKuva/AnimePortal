@@ -4,10 +4,12 @@ using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
 using BLL.Abstractions.Interfaces.Adapters;
+using BLL.Abstractions.Interfaces.Jwt;
 using BLL.Adapters;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;
+using Core.DTOs.Jwt;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -55,13 +57,11 @@ builder.Services.AddDbContext<AuthServerContext>(options =>
         options.UseNpgsql(builder.Configuration["AUTH_SERVER_CONNECTION_STRING"]);
     }
 });
-builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudForEntity<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<JwtGeneralHelper>();
-builder.Services.AddScoped<JwtRefresher>();
-builder.Services.AddScoped<JWTTokensManipulator>();
-builder.Services.AddScoped<IUserManipulator<User>, JwtUserManipulator>();
+builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
+
+builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
@@ -73,17 +73,19 @@ builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
     {
         jwtConfigurations.Audience = builder.Configuration["JWT:Audience"];
         jwtConfigurations.Issuer = builder.Configuration["JWT:Issuer"];
-        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT:Lifetime"]);
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT:AccessLifetime"]);
         jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT:RefreshLifetime"]);
-        jwtConfigurations.SecretCode = builder.Configuration["JWT:SecretCode"];
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT:AccessSecretCode"];
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT:RefreshSecretCode"];
     }
     else
     {
         jwtConfigurations.Audience = builder.Configuration["JWT_AUDIENCE"];
         jwtConfigurations.Issuer = builder.Configuration["JWT_ISSUER"];
-        jwtConfigurations.Lifetime = int.Parse(builder.Configuration["JWT_LIFETIME"]);
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT_ACCESS_LIFETIME"]);
         jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT_REFRESH_LIFETIME"]);
-        jwtConfigurations.SecretCode = builder.Configuration["JWT_SECRET_CODE"];
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT_ACCESS_SECRET_CODE"];
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT_REFRESH_SECRET_CODE"];
     }
 });
 builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>

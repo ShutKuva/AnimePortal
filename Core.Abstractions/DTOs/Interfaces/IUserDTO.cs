@@ -1,6 +1,6 @@
 ﻿namespace Core.Abstractions.DTOs.Interfaces
 {
-    public interface IUserDTO
+    public interface IUserDto
     {
     }
 }

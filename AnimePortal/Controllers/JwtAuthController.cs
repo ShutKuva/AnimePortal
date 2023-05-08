@@ -1,46 +1,75 @@
-﻿using AnimePortalAuthServer.Controllers;
-using BLL.Abstractions.Interfaces;
-using BLL.Jwt;
+﻿using AnimePortalAuthServer.Constants;
+using AnimePortalAuthServer.Controllers;
 using Core.Abstractions.DTOs.Interfaces;
-using Core.DB;
 using Core.DTOs.Jwt;
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstraction.Interfaces;
 
 namespace AnimePortal.Controllers
 {
     public class JwtAuthController : BaseController
     {
-        private readonly IUserManipulator<User> _userManipulator;
-        private readonly JwtRefresher _jwtRefresher;
+        private readonly IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken> _userService;
 
-        public JwtAuthController(IUserManipulator<User> userManipulator, JwtRefresher jwtRefresher)
+        public JwtAuthController(IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken> userService)
         {
-            _userManipulator = userManipulator;
-            _jwtRefresher = jwtRefresher;
+            _userService = userService;
         }
 
         [HttpPost("register")]
-        public async Task<CreatedResult> RegisterUser([FromBody] RegisterUser userModel)
+        public async Task<CreatedResult> RegisterUserAsync([FromBody] RegisterUser userModel)
         {
-            IUserDTO user = await _userManipulator.RegisterNewUser(userModel);
+            JwtUserDto user = await _userService.RegisterNewUserAsync(userModel);
 
-            return Created(string.Empty, user);
+            JwtOnlyTokenDto result = ProcessUser(user);
+
+            return Created(string.Empty, result);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<IUserDTO>> LoginUser([FromBody] LoginUser userModel)
+        public async Task<ActionResult<IUserDto>> LoginUserAsync([FromBody] LoginUser userModel)
         {
-            IUserDTO user = await _userManipulator.LoginUser(userModel);
+            JwtUserDto user = await _userService.LoginUserAsync(userModel);
 
-            return Ok(user);
+            JwtOnlyTokenDto result = ProcessUser(user);
+
+            return Ok(result);
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<IUserDTO>> RefreshJwtToken([FromBody] RefreshUser refreshUser)
+        public async Task<ActionResult<IUserDto>> RefreshJwtTokenAsync([FromBody] RefreshUser refreshUser)
         {
-            IUserDTO user = await _jwtRefresher.RefreshToken(refreshUser);
+            string? refreshToken = Request.Cookies[CookieConstants.REFRESH_CODE_COOKIE_NAME];
 
-            return Ok(user);
+            if (refreshToken == null)
+            {
+                throw new ArgumentException("There is no refresh token.");
+            }
+
+            RefreshUserWithRefreshToken refreshUserWithRefreshToken = new RefreshUserWithRefreshToken()
+            {
+                Token = refreshUser.Token,
+                RefreshToken = refreshToken
+            };
+
+            JwtUserDto user = await _userService.RefreshUserAsync(refreshUserWithRefreshToken);
+
+            JwtOnlyTokenDto result = ProcessUser(user);
+
+            return Ok(result);
+        }
+
+        private JwtOnlyTokenDto ProcessUser(JwtUserDto user)
+        {
+            Response.Cookies.Append(CookieConstants.REFRESH_CODE_COOKIE_NAME, user.RefreshToken, new CookieOptions()
+            {
+                HttpOnly = true,
+            });
+
+            return new JwtOnlyTokenDto
+            {
+                Token = user.Token
+            };
         }
     }
 }

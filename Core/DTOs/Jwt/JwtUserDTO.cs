@@ -2,9 +2,8 @@
 
 namespace Core.DTOs.Jwt
 {
-    public class JwtUserDTO : IUserDTO
+    public class JwtUserDto : JwtOnlyTokenDto, IUserDto
     {
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }

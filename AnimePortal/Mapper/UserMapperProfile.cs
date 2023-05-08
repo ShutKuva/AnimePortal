@@ -7,7 +7,7 @@ namespace AnimePortalAuthServer.Mapper
     {
         public UserMapperProfile()
         {
-            CreateMap<UserMapperProfile, JwtUserDTO>();
+            CreateMap<UserMapperProfile, JwtUserDto>();
         }
     }
 }

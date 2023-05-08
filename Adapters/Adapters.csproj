@@ -8,15 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Adapters.Abstractions\Adapters.Abstractions.csproj" />
     <ProjectReference Include="..\BLL.Abstractions\BLL.Abstractions.csproj" />
-    <ProjectReference Include="..\Core.Abstractions\Core.Abstractions.csproj" />
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\DAL\DAL.csproj" />
+    <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>
