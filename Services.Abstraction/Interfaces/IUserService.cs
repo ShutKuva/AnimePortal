@@ -6,8 +6,8 @@ namespace Services.Abstraction.Interfaces
     public interface IUserService<TUserDto, TRegisterUser, TLoginUser, TRefreshUser>
     where TUserDto : IUserDto
     {
-        Task<TUserDto> RegisterNewUser(TRegisterUser userModel);
-        Task<TUserDto> LoginUser(TLoginUser loginUser);
-        Task<TUserDto> RefreshUser(TRefreshUser refreshUser);
+        Task<TUserDto> RegisterNewUserAsync(TRegisterUser userModel);
+        Task<TUserDto> LoginUserAsync(TLoginUser loginUser);
+        Task<TUserDto> RefreshUserAsync(TRefreshUser refreshUser);
     }
 }

@@ -24,7 +24,7 @@ namespace BLL.Jwt
             _jwtConfigurations = jwtConfigurations.Value ?? throw new ArgumentException(nameof(jwtConfigurations));
         }
 
-        public async Task<JwtUserDto> RegisterNewUser(RegisterUser registerUser)
+        public async Task<JwtUserDto> RegisterNewUserAsync(RegisterUser registerUser)
         {
             IEnumerable<User> usersWithSameName = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == registerUser.Name);
 
@@ -39,10 +39,10 @@ namespace BLL.Jwt
                 PasswordHash = StringHasher.HashStringSHA256(registerUser.Password),
             };
 
-            return await ProcessUser(newUser);
+            return await ProcessUserAsync(newUser);
         }
 
-        public async Task<JwtUserDto> LoginUser(LoginUser loginUser)
+        public async Task<JwtUserDto> LoginUserAsync(LoginUser loginUser)
         {
             string hashedPassword = StringHasher.HashStringSHA256(loginUser.Password);
 
@@ -55,10 +55,10 @@ namespace BLL.Jwt
                 throw new ArgumentException("Wrong credentials.");
             }
 
-            return await ProcessUser(user);
+            return await ProcessUserAsync(user);
         }
 
-        public async Task<JwtUserDto> RefreshUser(RefreshUserWithRefreshToken refreshUser)
+        public async Task<JwtUserDto> RefreshUserAsync(RefreshUserWithRefreshToken refreshUser)
         {
             JwtSecurityToken token = new JwtSecurityToken(refreshUser.Token);
 
@@ -81,10 +81,10 @@ namespace BLL.Jwt
                 throw new ArgumentException("Wrong refresh code.");
             }
 
-            return await ProcessUser(user);
+            return await ProcessUserAsync(user);
         }
 
-        public async Task<JwtUserDto> ProcessUser(User user)
+        public async Task<JwtUserDto> ProcessUserAsync(User user)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 

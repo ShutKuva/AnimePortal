@@ -17,9 +17,9 @@ namespace AnimePortal.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<CreatedResult> RegisterUser([FromBody] RegisterUser userModel)
+        public async Task<CreatedResult> RegisterUserAsync([FromBody] RegisterUser userModel)
         {
-            JwtUserDto user = await _userService.RegisterNewUser(userModel);
+            JwtUserDto user = await _userService.RegisterNewUserAsync(userModel);
 
             JwtOnlyTokenDto result = ProcessUser(user);
 
@@ -27,9 +27,9 @@ namespace AnimePortal.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<IUserDto>> LoginUser([FromBody] LoginUser userModel)
+        public async Task<ActionResult<IUserDto>> LoginUserAsync([FromBody] LoginUser userModel)
         {
-            JwtUserDto user = await _userService.LoginUser(userModel);
+            JwtUserDto user = await _userService.LoginUserAsync(userModel);
 
             JwtOnlyTokenDto result = ProcessUser(user);
 
@@ -37,7 +37,7 @@ namespace AnimePortal.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<IUserDto>> RefreshJwtToken([FromBody] RefreshUser refreshUser)
+        public async Task<ActionResult<IUserDto>> RefreshJwtTokenAsync([FromBody] RefreshUser refreshUser)
         {
             string? refreshToken = Request.Cookies[CookieConstants.REFRESH_CODE_COOKIE_NAME];
 
@@ -52,7 +52,7 @@ namespace AnimePortal.Controllers
                 RefreshToken = refreshToken
             };
 
-            JwtUserDto user = await _userService.RefreshUser(refreshUserWithRefreshToken);
+            JwtUserDto user = await _userService.RefreshUserAsync(refreshUserWithRefreshToken);
 
             JwtOnlyTokenDto result = ProcessUser(user);
 
