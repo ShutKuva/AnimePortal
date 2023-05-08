@@ -37,6 +37,7 @@ namespace BLL.Jwt
             {
                 Name = registerUser.Name,
                 PasswordHash = StringHasher.HashStringSHA256(registerUser.Password),
+                Email = registerUser.Email,
             };
 
             return await ProcessUserAsync(newUser);
