@@ -47,7 +47,7 @@ namespace BLL.Jwt
         {
             string hashedPassword = StringHasher.HashStringSHA256(loginUser.Password);
 
-            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == loginUser.Name && user.PasswordHash == hashedPassword);
+            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == loginUser.Login || user.Email == loginUser.Login && user.PasswordHash == hashedPassword);
 
             User? user = usersWithSameCredentials.FirstOrDefault();
 
