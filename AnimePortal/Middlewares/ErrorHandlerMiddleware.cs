@@ -28,9 +28,9 @@ namespace AnimePortalAuthServer.Middlewares
                 (HttpStatusCode statusCode, string message) = ex switch
                 {
                     UnauthorizedAccessException => (HttpStatusCode.Forbidden, "You are not authorized"),
-                    ApplicationException => (HttpStatusCode.BadRequest, "Bad request"),
                     NotFoundException => (HttpStatusCode.NotFound, ex.Message),
                     ArgumentNullException => (HttpStatusCode.BadRequest,ex.Message),
+                    ArgumentException => (HttpStatusCode.BadRequest, ex.Message),
                     _ => (HttpStatusCode.InternalServerError, ex.Message),
                 };
 
