@@ -1,5 +1,6 @@
 ﻿using AnimePortalAuthServer.Errors;
 using System.Net;
+using System.Net.Mime;
 using Core.Exceptions;
 
 namespace AnimePortalAuthServer.Middlewares
@@ -36,14 +37,14 @@ namespace AnimePortalAuthServer.Middlewares
 
                 ApiError response = _env.IsDevelopment()
                     ? new ApiError(
-                        (int)statusCode, message, ex.StackTrace?.ToString())
+                        (int)statusCode, message, ex.StackTrace)
                     : new ApiError(
                         (int)statusCode, message);
 
                 _logger.LogError(ex, ex.Message);
 
                 context.Response.StatusCode = (int)statusCode;
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = MediaTypeNames.Application.Json; 
                 await context.Response.WriteAsync(response.ToString());
             }
         }
