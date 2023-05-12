@@ -29,11 +29,15 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(animeDto), "Anime cannot be null");
             }
+            if (animeDto.AnimeDescription == null)
+            {
+                throw new ArgumentNullException(nameof(animeDto.AnimeDescription), "Anime description cannot be null");
+            }
 
-            Anime? anime = await GetAnimeByNameAsync(animeDto.Title);
+            Anime? anime = await GetAnimeByNameAsync(animeDto.AnimeDescription.FirstOrDefault().Title);
             if (anime != null)
             {
-                throw new InvalidOperationException($"Anime with Title { anime.Title } already exists.");
+                throw new InvalidOperationException($"Anime with Title { animeDto.AnimeDescription.FirstOrDefault().Title} already exists.");
             }
 
             anime = _mapper.Map<Anime>(animeDto);
@@ -128,7 +132,7 @@ namespace Services
 
         private async Task<Anime?> GetAnimeByNameAsync(string animeName)
         {
-            var anime = await _uow.AnimeRepository.ReadByConditionAsync(a => a.Title == animeName);
+            var anime = await _uow.AnimeRepository.ReadByConditionAsync(a => a.AnimeDescriptions.FirstOrDefault()!.Title == animeName);
             return anime.FirstOrDefault();
         }
     }

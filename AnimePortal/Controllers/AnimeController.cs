@@ -25,22 +25,21 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(anime);
         }
 
-        [HttpGet("preview/{animeId}")]
-        public async Task<ActionResult<AnimePreview>> GetAnimePreviewAsync(int animeId)
+        [HttpGet("{language}/preview/{animeId}")]
+        public async Task<ActionResult<AnimePreview>> GetAnimePreviewAsync(int animeId, string language)
         {
-            AnimePreview animePreview = await _animePreviewAdapter.GetAnimePreviewAsync(animeId);
+            AnimePreview animePreview = await _animePreviewAdapter.GetAnimePreviewAsync(animeId, language);
 
             return Ok(animePreview);
         }
 
-        [HttpGet("previews/{quantity}")]
-        public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimePreviewsAsync(int quantity)
+        [HttpGet("{language}/previews/{quantity}")]
+        public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimePreviewsAsync(int quantity, string language)
         {
-            var animePreivews = await _animePreviewAdapter.GetAnimePreviewsAsync(quantity);
+            var animePreivews = await _animePreviewAdapter.GetAnimePreviewsAsync(quantity, language);
 
             return Ok(animePreivews);
         }
-
 
         [HttpPost("create")]
         public async Task<CreatedResult> CreateAnimeAsync([FromBody] AnimeDto animeDto)

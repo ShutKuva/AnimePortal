@@ -1,15 +1,20 @@
-﻿using Core.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Core.DB;
+using Core.Enums;
 
 namespace Core.DTOs.Anime
 {
     public class AnimeDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Placement { get; set; } = string.Empty;
+        [Required]
+        public ICollection<AnimeDescriptionDto?> AnimeDescription { get; set; } = new List<AnimeDescriptionDto?>();
+        private DateTime _date;
         public string Duration { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Author { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
-        public VideoTags? Tags { get; set; }
+        public DateTime Date
+        {
+            get => _date;
+            set => _date = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+        public ICollection<string>? Tags { get; set; } = new HashSet<string>();
     }
 }
