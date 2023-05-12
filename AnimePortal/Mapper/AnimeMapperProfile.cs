@@ -13,6 +13,11 @@ namespace AnimePortalAuthServer.Mapper
             CreateMap<Anime, AnimePreview>()
                 .ForMember(dest => dest.ImageUrl,
                     opt => opt.MapFrom(src => src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Previews)!.ImageUrl))
+                .ForMember(dest=> dest.AnimeDescription, opt=> opt.MapFrom((src, dest, destMember, context) =>
+                {
+                    var desiredLanguage = context.Items["DesiredLanguage"].ToString();
+                    return src.AnimeDescriptions.FirstOrDefault(lang => lang.Language.Name == desiredLanguage.ToLower());
+                }))
                 .ReverseMap();
 
             CreateMap<Anime, AnimeDto>()

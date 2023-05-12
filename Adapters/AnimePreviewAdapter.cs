@@ -4,7 +4,7 @@ using Core.DB;
 using Core.DTOs.Anime;
 using Services.Abstraction.Interfaces;
 
-namespace BLL.Adapters
+namespace Adapters
 {
     public class AnimePreviewAdapter : IAnimePreviewAdapter
     {
@@ -20,7 +20,16 @@ namespace BLL.Adapters
         public async Task<AnimePreview> GetAnimePreviewAsync(int animeId, string language)
         {
             var anime = await _animeService.GetAnimeAsync(animeId);
-            var animePreview = _mapper.Map<AnimePreview>(anime);
+
+            var animePreview =
+                _mapper.Map<AnimePreview>(anime, options =>
+                {
+                    options.Items.Add("DesiredLanguage", $"{language}");
+                    options.AfterMap((obj,ani) =>
+                    {
+                        options.Items.Remove("DesiredLanguage");
+                    });
+                });
             animePreview.AnimeDescription = _mapper.Map<AnimeDescriptionDto>(anime.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == language));
             return animePreview;
         }

@@ -8,6 +8,11 @@ namespace Core.DTOs.Others
 {
     public class LanguageDto
     {
-        public string Name { get; set; } = string.Empty;
+        private string _name = string.Empty;
+        public string Name
+        {
+            get => _name;
+            set => _name = value.ToLower();
+        }
     }
 }
