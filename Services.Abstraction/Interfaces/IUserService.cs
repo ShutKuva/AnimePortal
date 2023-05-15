@@ -9,5 +9,6 @@ namespace Services.Abstraction.Interfaces
         Task<TUserDto> RegisterNewUserAsync(TRegisterUser userModel);
         Task<TUserDto> LoginUserAsync(TLoginUser loginUser);
         Task<TUserDto> RefreshUserAsync(TRefreshUser refreshUser);
+        Task<bool> DoesNameOrEmailExist(string nameOrEmail);
     }
 }

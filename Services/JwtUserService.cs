@@ -104,6 +104,13 @@ namespace BLL.Jwt
             };
         }
 
+        public async Task<bool> DoesNameOrEmailExist(string nameOrEmail)
+        {
+            IEnumerable<User> users = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == nameOrEmail || user.Email == nameOrEmail);
+
+            return users.Any();
+        }
+
         private JwtSecurityToken GenerateJwtAccessTokenForUser(User user)
         {
             List<Claim> claims = new List<Claim>
