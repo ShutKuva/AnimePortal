@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
 using Core.DB;
 using Core.DTOs.Anime;
 using Core.Enums;
@@ -90,19 +91,21 @@ namespace Services
         {
             Anime anime = await GetAnimeAsync(animeId);
 
-            await _uow.AnimeRepository.DeleteAsync(animeId);
-
+            List<Task<CloudinaryDotNet.Actions.DeletionResult>> tasks = new List<Task<DeletionResult>>(); 
             foreach (var photo in anime.Photos!)
             {
                 try
                 {
-                    await _photoService.DeletePhotoAsync(photo.Id);
+                    tasks.Add(_photoService.DeletePhotoAsync(photo.Id));
                 }
                 catch
                 {
                     // ignored
                 }
             }
+
+            await Task.WhenAll(tasks);
+            await _uow.AnimeRepository.DeleteAsync(animeId);
 
             await _uow.SaveChangesAsync();
         }

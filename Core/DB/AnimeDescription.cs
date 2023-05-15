@@ -4,7 +4,6 @@ namespace Core.DB
 {
     public class AnimeDescription : BaseEntity
     {
-        public int AnimeId { get; set; }
         public int LanguageId { get; set; }
         [Required]
         public Language? Language { get; set; }
@@ -14,6 +13,6 @@ namespace Core.DB
         public string Status { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
         public string Placement { get; set; } = string.Empty;
-        public Anime? Anime { get; set; }
+        public int AnimeId { get; set; }
     }
 }

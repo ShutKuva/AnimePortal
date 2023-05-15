@@ -22,7 +22,12 @@ namespace DAL.Repositories
 
         public async Task<Anime?> ReadAsync(int id)
         {
-            var user = await _context.Animes.Include(p=> p.Photos).FirstOrDefaultAsync(user => user.Id == id);
+            var user = await _context.Animes.Include(p => p.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(l => l.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a.Genres)
+                .FirstOrDefaultAsync(user => user.Id == id);
             return user;
         }
 
@@ -58,7 +63,7 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            IQueryable<Anime> animes = _context.Animes.Include(p =>p.Photos).Take(count);
+            IQueryable<Anime> animes = _context.Animes.Include(p => p.Photos).Take(count);
             return animes;
         }
 

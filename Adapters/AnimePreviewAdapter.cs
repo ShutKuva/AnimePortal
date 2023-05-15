@@ -20,29 +20,34 @@ namespace Adapters
         public async Task<AnimePreview> GetAnimePreviewAsync(int animeId, string language)
         {
             var anime = await _animeService.GetAnimeAsync(animeId);
-
-            var animePreview =
-                _mapper.Map<AnimePreview>(anime, options =>
-                {
-                    options.Items.Add("DesiredLanguage", $"{language}");
-                    options.AfterMap((obj,ani) =>
-                    {
-                        options.Items.Remove("DesiredLanguage");
-                    });
-                });
-            animePreview.AnimeDescription = _mapper.Map<AnimeDescriptionDto>(anime.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == language));
-            return animePreview;
+            return MapAnimePreview(anime, language);
         }
 
         public async Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quantity, string language)
         {
             var animes = await _animeService.GetAnimeByCountAsync(quantity);
             ICollection<AnimePreview> animePreviews = new List<AnimePreview>(); 
+
             foreach (Anime anime in animes)
             {
-                animePreviews.Add(await GetAnimePreviewAsync(anime.Id, language));
+                animePreviews.Add(MapAnimePreview(anime, language));
             }
             return animePreviews;
         }
+
+        private AnimePreview MapAnimePreview(Anime anime, string language)
+        {
+            var animePreview =
+                _mapper.Map<AnimePreview>(anime, options =>
+                {
+                    options.Items.Add("DesiredLanguage", $"{language}");
+                    options.AfterMap((obj, ani) =>
+                    {
+                        options.Items.Remove("DesiredLanguage");
+                    });
+                });
+            return animePreview;
+        }
     }
+
 }

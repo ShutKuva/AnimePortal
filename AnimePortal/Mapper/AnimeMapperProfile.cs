@@ -18,6 +18,7 @@ namespace AnimePortalAuthServer.Mapper
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
                     return src.AnimeDescriptions.FirstOrDefault(lang => lang.Language.Name == desiredLanguage.ToLower());
                 }))
+                .ForMember(dest=> dest.Tags, opt=> opt.MapFrom(src=>src.Tags))
                 .ReverseMap();
 
             CreateMap<Anime, AnimeDto>()
