@@ -22,13 +22,13 @@ namespace DAL.Repositories
 
         public async Task<Anime?> ReadAsync(int id)
         {
-            var user = await _context.Animes.Include(p => p.Photos)
+            var anime = await _context.Animes.Include(p => p.Photos)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(l => l.Language)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(a => a.Genres)
                 .FirstOrDefaultAsync(user => user.Id == id);
-            return user;
+            return anime;
         }
 
         public async Task<IEnumerable<Anime>> ReadByConditionAsync(Expression<Func<Anime, bool>> predicate)
