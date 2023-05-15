@@ -2,7 +2,7 @@
 
 namespace DAL.Abstractions.Interfaces
 {
-    public interface ILanguageRepository : IRepository<Language>
+    public interface IGenreRepository : IRepository<Genre>
     {
     }
 }
