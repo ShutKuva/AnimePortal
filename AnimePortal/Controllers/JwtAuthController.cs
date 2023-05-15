@@ -58,6 +58,16 @@ namespace AnimePortal.Controllers
             return Ok(result);
         }
 
+        [HttpPost("user-exists")]
+        public async Task<ActionResult> DoesNameOrEmailExist([FromBody] UserNameOrEmail userCredential)
+        {
+            bool doesNameOrEmailExist = await _userService.DoesNameOrEmailExist(userCredential.NameOrEmail);
+
+            var response = new { checkStatus = doesNameOrEmailExist };
+
+            return Ok(response);
+        }
+
         private JwtOnlyTokenDto ProcessUser(JwtUserDto user)
         {
             Response.Cookies.Append(CookieConstants.REFRESH_CODE_COOKIE_NAME, user.RefreshToken, new CookieOptions()
