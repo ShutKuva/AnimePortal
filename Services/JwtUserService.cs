@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace BLL.Jwt
 {
-    public class JwtUserService : IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken>
+    public class JwtUserService : IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtTokenHandler _tokenHandler;
@@ -59,11 +59,11 @@ namespace BLL.Jwt
             return await ProcessUserAsync(user);
         }
 
-        public async Task<JwtUserDto> RefreshUserAsync(RefreshUserWithRefreshToken refreshUser)
+        public async Task<JwtUserDto> RefreshUserAsync(RefreshUser refreshUser)
         {
-            JwtSecurityToken token = new JwtSecurityToken(refreshUser.Token);
+            ClaimsPrincipal cp = _tokenHandler.ValidateToken(refreshUser.RefreshToken);
 
-            bool successful = int.TryParse(token.Claims.FirstOrDefault(claim => claim.Type == UserClaimNames.Id)?.Value, out int id);
+            bool successful = int.TryParse(cp.Claims.FirstOrDefault(claim => claim.Type == UserClaimNames.Id)?.Value, out int id);
 
             if (!successful)
             {
@@ -89,13 +89,13 @@ namespace BLL.Jwt
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
-            user.RefreshToken = handler.WriteToken(_tokenHandler.CreateRefreshToken());
+            user.RefreshToken = handler.WriteToken(GenerateJwtRefreshTokenForUser(user));
             user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime).ToUniversalTime();
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
 
-            JwtSecurityToken token = GenerateJwtTokenForUser(user);
+            JwtSecurityToken token = GenerateJwtAccessTokenForUser(user);
 
             return new JwtUserDto()
             {
@@ -104,7 +104,7 @@ namespace BLL.Jwt
             };
         }
 
-        private JwtSecurityToken GenerateJwtTokenForUser(User user)
+        private JwtSecurityToken GenerateJwtAccessTokenForUser(User user)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -113,6 +113,16 @@ namespace BLL.Jwt
             };
 
             return _tokenHandler.CreateAccessToken(claims);
+        }
+
+        private JwtSecurityToken GenerateJwtRefreshTokenForUser(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(UserClaimNames.Id, user.Id.ToString())
+            };
+
+            return _tokenHandler.CreateRefreshToken(claims);
         }
     }
 }

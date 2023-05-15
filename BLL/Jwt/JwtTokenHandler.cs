@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BLL.Abstractions.Interfaces.Jwt;
+using Azure.Core;
 
 namespace BLL.Jwt
 {
@@ -32,11 +33,12 @@ namespace BLL.Jwt
             return token;
         }
 
-        public JwtSecurityToken CreateRefreshToken()
+        public JwtSecurityToken CreateRefreshToken(List<Claim> claims)
         {
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.RefreshSecretCode));
 
             var token = new JwtSecurityToken(
+                claims: claims,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
                 issuer: _jwtConfigurations.Issuer,
                 audience: _jwtConfigurations.Audience,
@@ -44,6 +46,25 @@ namespace BLL.Jwt
             );
 
             return token;
+        }
+
+        public ClaimsPrincipal ValidateToken(string strToken)
+        {
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+            var validationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.AccessSecretCode)),
+                ValidateAudience = false,
+                ValidateIssuer = false,
+            };
+
+            SecurityToken token;
+
+            ClaimsPrincipal cp = handler.ValidateToken(strToken, validationParameters, out token);
+
+            return cp;
         }
     }
 }
