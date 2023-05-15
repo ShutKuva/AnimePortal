@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Core.DB;
-using Core.Enums;
 
 namespace Core.DTOs.Anime
 {

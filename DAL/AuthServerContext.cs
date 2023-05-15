@@ -26,6 +26,10 @@ namespace DAL
                         c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                         c => c.ToHashSet())
                 );
+
+            modelBuilder.Entity<AnimeDescription>()
+                .HasMany(e => e.Genres)
+                .WithMany(e => e.AnimeDescriptions);
         }
     }
 }

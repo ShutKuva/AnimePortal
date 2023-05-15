@@ -1,5 +1,4 @@
-﻿
-namespace Core.DB
+﻿namespace Core.DB
 {
     public class Anime : BaseEntity
     {

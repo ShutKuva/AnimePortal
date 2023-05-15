@@ -1,7 +1,4 @@
-﻿using Core.DB;
-using Core.Enums;
-
-namespace Core.DTOs.Anime
+﻿namespace Core.DTOs.Anime
 {
     public class AnimePreview
     {

@@ -1,6 +1,4 @@
-﻿
-using Core.DB;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Core.DTOs.Others;
 
 namespace Core.DTOs.Anime

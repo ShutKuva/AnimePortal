@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Adapters;
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
@@ -28,7 +29,7 @@ builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(
         new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
-});
+}).AddJsonOptions(x=> x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
