@@ -26,11 +26,11 @@ namespace BLL.Jwt
 
         public async Task<JwtUserDto> RegisterNewUserAsync(RegisterUser registerUser)
         {
-            IEnumerable<User> usersWithSameName = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == registerUser.Name);
+            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == registerUser.Name || user.Email == registerUser.Email);
 
-            if (usersWithSameName.FirstOrDefault() != null)
+            if (usersWithSameCredentials.FirstOrDefault() != null)
             {
-                throw new ArgumentException("User with this name has been already registered");
+                throw new ArgumentException("User with this credentials has been already registered");
             }
 
             User newUser = new User
@@ -47,7 +47,7 @@ namespace BLL.Jwt
         {
             string hashedPassword = StringHasher.HashStringSHA256(loginUser.Password);
 
-            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == loginUser.Login || user.Email == loginUser.Login && user.PasswordHash == hashedPassword);
+            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => (user.Name == loginUser.NameOrEmail || user.Email == loginUser.NameOrEmail) && user.PasswordHash == hashedPassword);
 
             User? user = usersWithSameCredentials.FirstOrDefault();
 
