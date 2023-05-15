@@ -63,7 +63,12 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            IQueryable<Anime> animes = _context.Animes.Include(p => p.Photos).Take(count);
+            IQueryable<Anime> animes = _context.Animes.Include(a => a.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a.Genres)
+                .Take(count);
             return animes;
         }
 

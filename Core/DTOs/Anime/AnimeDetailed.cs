@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Core.DB;
+using Core.DTOs.Others;
 
 namespace Core.DTOs.Anime
 {
-    public class AnimeDetailed 
+    public class AnimeDetailed
     {
         [Required]
-        public ICollection<AnimeDescription?> AnimeDescription { get; set; } = new List<AnimeDescription?>();
-        public string PosterUrl {get; set; } = string.Empty;
-        public ICollection<Photo> Screenshots { get; set; } = new HashSet<Photo>();
+        public AnimeDescriptionDto? AnimeDescription { get; set; }
+        public ICollection<PhotoDto> Screenshots { get; set; } = new List<PhotoDto>();
+        public string Poster { get; set; } = string.Empty;
+        public string Studio { get; set; } = string.Empty;
+        public float Rating { get; set; } = 0.0f;
     }
 }

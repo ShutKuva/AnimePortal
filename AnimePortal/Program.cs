@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 using Adapters;
+using Adapters.Abstractions;
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
-using BLL.Abstractions.Interfaces.Adapters;
 using BLL.Abstractions.Interfaces.Jwt;
 using BLL.Jwt;
 using Core.DB;
@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Services;
 using Services.Abstraction;
 using Services.Abstraction.Interfaces;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,7 @@ builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
 builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<IAnimeDetailedAdapter, AnimeDetailedAdapter>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
 
 //Configurations

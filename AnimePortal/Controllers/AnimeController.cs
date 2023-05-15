@@ -1,4 +1,4 @@
-﻿using BLL.Abstractions.Interfaces.Adapters;
+﻿using Adapters.Abstractions;
 using Core.DB;
 using Core.DTOs.Anime;
 using Core.Enums;
@@ -11,11 +11,13 @@ namespace AnimePortalAuthServer.Controllers
     {
         private readonly IAnimeService _animeService;
         private readonly IAnimePreviewAdapter _animePreviewAdapter;
+        private readonly IAnimeDetailedAdapter _animeDetailedAdapter;
 
-        public AnimeController(IAnimeService animeService, IAnimePreviewAdapter animePreviewAdapter)
+        public AnimeController(IAnimeService animeService, IAnimePreviewAdapter animePreviewAdapter, IAnimeDetailedAdapter animeDetailedAdapter)
         {
             _animeService = animeService;
             _animePreviewAdapter = animePreviewAdapter;
+            _animeDetailedAdapter = animeDetailedAdapter;
         }
 
         [HttpGet("{animeId}")]
@@ -33,12 +35,28 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(animePreview);
         }
 
-        [HttpGet("{language}/previews/{quantity}")]
-        public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimePreviewsAsync(int quantity, string language)
+        [HttpGet("{language}/previews/Top")]
+        public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimePreviewsAsync(string language)
         {
-            var animePreivews = await _animePreviewAdapter.GetAnimePreviewsAsync(quantity, language);
+            var animePreivews = await _animePreviewAdapter.GetAnimePreviewsAsync(10, language);
 
             return Ok(animePreivews);
+        }
+
+        [HttpGet("{language}/detailed/{animeId}")]
+        public async Task<ActionResult<AnimePreview>> GetAnimeDetailAsync(int animeId, string language)
+        {
+            AnimeDetailed animeDetailed = await _animeDetailedAdapter.GetAnimeDetailedAsync(animeId, language);
+
+            return Ok(animeDetailed);
+        }
+
+        [HttpGet("{language}/detailed/Top")]
+        public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimeDetailedAsync(string language)
+        {
+            var animeDetailed = await _animeDetailedAdapter.GetAnimesDetailedAsync(10, language);
+
+            return Ok(animeDetailed);
         }
 
         [HttpPost("create")]

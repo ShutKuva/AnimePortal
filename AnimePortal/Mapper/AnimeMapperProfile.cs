@@ -11,8 +11,8 @@ namespace AnimePortalAuthServer.Mapper
         public AnimeMapperProfile()
         {
             CreateMap<Anime, AnimePreview>()
-                .ForMember(dest => dest.ImageUrl,
-                    opt => opt.MapFrom(src => src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Previews)!.ImageUrl))
+                .ForMember(dest => dest.Spotlight,
+                    opt => opt.MapFrom(src => src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Spotlight)!.ImageUrl))
                 .ForMember(dest=> dest.AnimeDescription, opt=> opt.MapFrom((src, dest, destMember, context) =>
                 {
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
@@ -44,12 +44,22 @@ namespace AnimePortalAuthServer.Mapper
                 .ReverseMap();
 
             CreateMap<Anime, AnimeDetailed>()
-                .ForMember(dest => dest.PosterUrl,
+                .ForMember(dest => dest.Poster,
                     opt => opt.MapFrom(src =>
                         src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Previews)!.ImageUrl))
                 .ForMember(dest => dest.Screenshots,
-                    opt => opt.MapFrom(src => src.Photos!.
-                        Where(p => p.PhotoType == PhotoTypes.Screenshots))).ReverseMap();
+                    opt => opt.MapFrom(src => src.Photos.Where(p => p.PhotoType == PhotoTypes.Screenshots)
+                        .ToList()))
+                .ForMember(dest => dest.AnimeDescription,
+                    opt => opt.MapFrom((src,
+                        dest,
+                        destMember,
+                        context) =>
+                {
+                    var desiredLanguage = context.Items["DesiredLanguage"].ToString();
+                    return src.AnimeDescriptions.FirstOrDefault(lang => lang.Language.Name == desiredLanguage.ToLower());
+                })).ReverseMap();
+            CreateMap<Photo, PhotoDto>().ForMember(dest=> dest.PhotoId, opt=> opt.MapFrom(src=>src.Id)).ReverseMap();
         }
     }
 }

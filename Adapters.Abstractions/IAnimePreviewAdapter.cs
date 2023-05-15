@@ -1,6 +1,6 @@
 ﻿using Core.DTOs.Anime;
 
-namespace BLL.Abstractions.Interfaces.Adapters
+namespace Adapters.Abstractions
 {
     public interface IAnimePreviewAdapter
     {

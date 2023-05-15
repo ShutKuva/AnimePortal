@@ -113,7 +113,7 @@ namespace Services
         public async Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots)
         {
             Anime anime = await GetAnimeAsync(animeId);
-            var photo = await _photoService.UploadPhotoAsync(file);
+            var photo = await _photoService.UploadPhotoAsync(file, photoType);
 
             anime.Photos!.Add(photo);
             await _uow.SaveChangesAsync();

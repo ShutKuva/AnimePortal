@@ -3,10 +3,12 @@
     public class AnimePreview
     {
         public int Id { get; set; }
-        public AnimeDescriptionDto? AnimeDescription { get; set; }
-        public string Duration { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
         public DateTime Date { get; set; }
+        public float Rating { get; set; } = 0.0f;
+        public string Studio { get; set; } = string.Empty;
+        public string Duration { get; set; } = string.Empty;
+        public string Spotlight { get; set; } = string.Empty;
+        public AnimeDescriptionDto? AnimeDescription { get; set; }
         public ICollection<string>? Tags { get; set; } = new HashSet<string>();
     }
 }

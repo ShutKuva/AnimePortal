@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    partial class AuthServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230515195215_Add column Studio to Anime ")]
+    partial class AddcolumnStudiotoAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("GenresId");
 
-                    b.ToTable("AnimeDescriptionGenre", (string)null);
+                    b.ToTable("AnimeDescriptionGenre");
                 });
 
             modelBuilder.Entity("Core.DB.Anime", b =>
@@ -70,7 +73,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Animes", (string)null);
+                    b.ToTable("Animes");
                 });
 
             modelBuilder.Entity("Core.DB.AnimeDescription", b =>
@@ -113,7 +116,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("AnimeDescription", (string)null);
+                    b.ToTable("AnimeDescription");
                 });
 
             modelBuilder.Entity("Core.DB.Genre", b =>
@@ -130,7 +133,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres", (string)null);
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Core.DB.Language", b =>
@@ -147,7 +150,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages", (string)null);
+                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("Core.DB.Photo", b =>
@@ -180,7 +183,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("AnimeId");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Core.DB.User", b =>
@@ -215,7 +218,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("AnimeDescriptionGenre", b =>
