@@ -9,9 +9,9 @@ namespace AnimePortal.Controllers
 {
     public class JwtAuthController : BaseController
     {
-        private readonly IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken> _userService;
+        private readonly IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> _userService;
 
-        public JwtAuthController(IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUserWithRefreshToken> userService)
+        public JwtAuthController(IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> userService)
         {
             _userService = userService;
         }
@@ -37,7 +37,7 @@ namespace AnimePortal.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<IUserDto>> RefreshJwtTokenAsync([FromBody] RefreshUser refreshUser)
+        public async Task<ActionResult<IUserDto>> RefreshJwtTokenAsync()
         {
             string? refreshToken = Request.Cookies[CookieConstants.REFRESH_CODE_COOKIE_NAME];
 
@@ -46,9 +46,8 @@ namespace AnimePortal.Controllers
                 throw new ArgumentException("There is no refresh token.");
             }
 
-            RefreshUserWithRefreshToken refreshUserWithRefreshToken = new RefreshUserWithRefreshToken()
+            RefreshUser refreshUserWithRefreshToken = new RefreshUser()
             {
-                Token = refreshUser.Token,
                 RefreshToken = refreshToken
             };
 
@@ -57,6 +56,16 @@ namespace AnimePortal.Controllers
             JwtOnlyTokenDto result = ProcessUser(user);
 
             return Ok(result);
+        }
+
+        [HttpPost("user-exists")]
+        public async Task<ActionResult> DoesNameOrEmailExist([FromBody] UserNameOrEmail userCredential)
+        {
+            bool doesNameOrEmailExist = await _userService.DoesNameOrEmailExist(userCredential.NameOrEmail);
+
+            var response = new { checkStatus = doesNameOrEmailExist };
+
+            return Ok(response);
         }
 
         private JwtOnlyTokenDto ProcessUser(JwtUserDto user)
