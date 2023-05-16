@@ -24,9 +24,9 @@ namespace DAL.Repositories
         {
             var anime = await _context.Animes.Include(p => p.Photos)
                 .Include(a => a.AnimeDescriptions)
-                .ThenInclude(l => l.Language)
+                .ThenInclude(l => l!.Language)
                 .Include(a => a.AnimeDescriptions)
-                .ThenInclude(a => a.Genres)
+                .ThenInclude(a => a!.Genres)
                 .FirstOrDefaultAsync(user => user.Id == id);
             return anime;
         }
@@ -65,13 +65,28 @@ namespace DAL.Repositories
         {
             IQueryable<Anime> animes = _context.Animes.Include(a => a.Photos)
                 .Include(a => a.AnimeDescriptions)
-                .ThenInclude(a => a.Language)
+                .ThenInclude(a => a!.Language)
                 .Include(a => a.AnimeDescriptions)
-                .ThenInclude(a => a.Genres)
+                .ThenInclude(a => a!.Genres)
                 .Take(count);
             return animes;
         }
 
+        public IQueryable<Anime> GetAnimeByCount(int count, string language)
+        {
+            IQueryable<Anime> animes = _context.Animes
+                .SelectMany(anime => anime.AnimeDescriptions, (anime, animeDescriptions) => new { anime, animeDescriptions })
+                .Where(animeData => animeData.animeDescriptions!.Language!.Name == language)
+                .Select(animeData => animeData.anime)
+                .Include(a => a.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Genres)
+                .Take(count);
+
+            return animes;
+        }
     }
 }
 

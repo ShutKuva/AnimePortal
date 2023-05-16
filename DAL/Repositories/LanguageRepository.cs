@@ -55,5 +55,10 @@ namespace DAL.Repositories
                 _context.Languages.Remove(language);
             }
         }
+
+        public async Task<ICollection<Language>> GetAllLanguagesAsync()
+        {
+           return await _context.Languages.ToListAsync();
+        }
     }
 }

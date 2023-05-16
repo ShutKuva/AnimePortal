@@ -13,10 +13,10 @@ namespace AnimePortalAuthServer.Mapper
             CreateMap<Anime, AnimePreview>()
                 .ForMember(dest => dest.Spotlight,
                     opt => opt.MapFrom(src => src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Spotlight)!.ImageUrl))
-                .ForMember(dest=> dest.AnimeDescription, opt=> opt.MapFrom((src, dest, destMember, context) =>
+                .ForMember(dest=> dest.AnimeDescription, opt=> opt.MapFrom((src, _, _, context) =>
                 {
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
-                    return src.AnimeDescriptions.FirstOrDefault(lang => lang.Language.Name == desiredLanguage.ToLower());
+                    return src.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == desiredLanguage?.ToLower());
                 }))
                 .ForMember(dest=> dest.Tags, opt=> opt.MapFrom(src=>src.Tags))
                 .ReverseMap();
@@ -48,16 +48,16 @@ namespace AnimePortalAuthServer.Mapper
                     opt => opt.MapFrom(src =>
                         src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Previews)!.ImageUrl))
                 .ForMember(dest => dest.Screenshots,
-                    opt => opt.MapFrom(src => src.Photos.Where(p => p.PhotoType == PhotoTypes.Screenshots)
+                    opt => opt.MapFrom(src => src.Photos!.Where(p => p.PhotoType == PhotoTypes.Screenshots)
                         .ToList()))
                 .ForMember(dest => dest.AnimeDescription,
                     opt => opt.MapFrom((src,
-                        dest,
-                        destMember,
+                        _,
+                        _,
                         context) =>
                 {
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
-                    return src.AnimeDescriptions.FirstOrDefault(lang => lang.Language.Name == desiredLanguage.ToLower());
+                    return src.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == desiredLanguage?.ToLower());
                 })).ReverseMap();
             CreateMap<Photo, PhotoDto>().ForMember(dest=> dest.PhotoId, opt=> opt.MapFrom(src=>src.Id)).ReverseMap();
         }

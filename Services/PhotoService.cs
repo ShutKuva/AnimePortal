@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Core.DB;
 using Core.DI;
@@ -9,7 +8,6 @@ using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Services.Abstraction;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Services
 {
@@ -68,7 +66,7 @@ namespace Services
             await _uow.SaveChangesAsync();
 
             return photo;
-        } 
+        }
 
         public async Task<DeletionResult> DeletePhotoAsync(int photoId)
         {
@@ -87,5 +85,6 @@ namespace Services
                         throw new NotFoundException($"Resource with id {id} was not found.");
             return photo;
         }
+
     }
 }

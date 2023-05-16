@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Core.DTOs.Anime
 {
     public class AnimeDto
     {
-        [Required]
         public ICollection<AnimeDescriptionDto?> AnimeDescription { get; set; } = new List<AnimeDescriptionDto?>();
         public ICollection<string>? Tags { get; set; } = new HashSet<string>();
         public string Duration { get; set; } = string.Empty;

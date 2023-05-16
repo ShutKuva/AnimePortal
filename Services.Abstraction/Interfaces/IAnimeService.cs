@@ -10,6 +10,7 @@ namespace Services.Abstraction.Interfaces
         Task CreateAsync(AnimeDto? anime);
         Task<Anime> GetAnimeAsync(int animeId);
         Task<IQueryable<Anime>> GetAnimeByCountAsync(int quantity);
+        Task<IQueryable<Anime>> GetAnimeByCountAsync(int quantity, string language);
         Task<Anime> UpdateAnimeAsync(Anime anime);
         Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId);
         Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots);

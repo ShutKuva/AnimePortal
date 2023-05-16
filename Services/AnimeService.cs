@@ -15,13 +15,15 @@ namespace Services
     {
         private readonly IUnitOfWork _uow;
         private readonly IPhotoService _photoService;
+        private readonly ILanguageService _languageService;
         private readonly IMapper _mapper;
 
-        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService)
+        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService)
         {
             _uow = uow;
             _mapper = mapper;
             _photoService = photoService;
+            _languageService = languageService;
         }
 
         public async Task CreateAsync(AnimeDto? animeDto)
@@ -30,18 +32,13 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(animeDto), "Anime cannot be null");
             }
-            if (animeDto.AnimeDescription == null)
+            if (!animeDto.AnimeDescription.Any())
             {
                 throw new ArgumentNullException(nameof(animeDto.AnimeDescription), "Anime description cannot be null");
             }
 
-            Anime? anime = await GetAnimeByNameAsync(animeDto.AnimeDescription.FirstOrDefault().Title);
-            if (anime != null)
-            {
-                throw new InvalidOperationException($"Anime with Title { animeDto.AnimeDescription.FirstOrDefault().Title} already exists.");
-            }
+            Anime anime = await MapAnimeDtoToAnime(animeDto);
 
-            anime = _mapper.Map<Anime>(animeDto);
             await _uow.AnimeRepository.CreateAsync(anime);
             await _uow.SaveChangesAsync();
         }
@@ -58,6 +55,13 @@ namespace Services
         {
             IQueryable<Anime> animes = _uow.AnimeRepository.GetAnimeByCount(quantity) ??
                                        throw new NotFoundException("For this query, nothing was found");
+
+            return Task.FromResult(animes);
+        }
+
+        public Task<IQueryable<Anime>> GetAnimeByCountAsync(int quantity, string language)
+        {
+            var animes = _uow.AnimeRepository.GetAnimeByCount(quantity, language);
 
             if (!animes.Any())
             {
@@ -80,18 +84,18 @@ namespace Services
             return anime;
         }
 
-        public Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId)
+        public async Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId)
         {
             var anime = _mapper.Map<Anime>(animeDto);
             anime.Id = animeId;
-            return UpdateAnimeAsync(anime);
+            return await UpdateAnimeAsync(anime);
         }
 
         public async Task DeleteAnimeAsync(int animeId)
         {
             Anime anime = await GetAnimeAsync(animeId);
 
-            List<Task<CloudinaryDotNet.Actions.DeletionResult>> tasks = new List<Task<DeletionResult>>(); 
+            List<Task<DeletionResult>> tasks = new List<Task<DeletionResult>>(); 
             foreach (var photo in anime.Photos!)
             {
                 try
@@ -138,5 +142,27 @@ namespace Services
             var anime = await _uow.AnimeRepository.ReadByConditionAsync(a => a.AnimeDescriptions.FirstOrDefault()!.Title == animeName);
             return anime.FirstOrDefault();
         }
+
+        private async Task<Anime> MapAnimeDtoToAnime(AnimeDto animeDto)
+        {
+            Anime anime = _mapper.Map<Anime>(animeDto);
+            foreach (var aD in anime.AnimeDescriptions)
+            {
+                var animeCheck = await GetAnimeByNameAsync(aD!.Title);
+                if (animeCheck != null)
+                {
+                    throw new InvalidOperationException($"Anime with Title {aD.Title} already exists.");
+                }
+
+                var language = await _languageService.GetLanguageByNameAsync(aD.Language!.Name);
+                if (language != null)
+                {
+                    aD.Language = language;
+                }
+            }
+
+            return anime ?? throw new InvalidOperationException();
+        }
+
     }
 }

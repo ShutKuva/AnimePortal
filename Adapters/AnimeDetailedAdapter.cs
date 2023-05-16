@@ -1,8 +1,8 @@
-﻿
-using Adapters.Abstractions;
+﻿using Adapters.Abstractions;
 using AutoMapper;
 using Core.DB;
 using Core.DTOs.Anime;
+using Core.Exceptions;
 using Services.Abstraction.Interfaces;
 
 namespace Adapters
@@ -26,7 +26,7 @@ namespace Adapters
 
         public async Task<ICollection<AnimeDetailed>> GetAnimesDetailedAsync(int quantity, string language)
         {
-            var animes = await _animeService.GetAnimeByCountAsync(quantity);
+            var animes = await _animeService.GetAnimeByCountAsync(quantity, language);
             ICollection<AnimeDetailed> animePreviews = new List<AnimeDetailed>();
 
             foreach (Anime anime in animes)
@@ -42,11 +42,17 @@ namespace Adapters
                 _mapper.Map<AnimeDetailed>(anime, options =>
                 {
                     options.Items.Add("DesiredLanguage", $"{language}");
-                    options.AfterMap((obj, ani) =>
+                    options.AfterMap((_, _) =>
                     {
                         options.Items.Remove("DesiredLanguage");
                     });
                 });
+
+            if (animePreview.AnimeDescription?.Language == null)
+            {
+                throw new NotFoundException("language not found");
+            }
+
             return animePreview;
         }
     }

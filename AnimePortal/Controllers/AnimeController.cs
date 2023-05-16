@@ -20,6 +20,7 @@ namespace AnimePortalAuthServer.Controllers
             _animeDetailedAdapter = animeDetailedAdapter;
         }
 
+
         [HttpGet("{animeId}")]
         public async Task<ActionResult<Anime>> GetAnimeAsync(int animeId)
         {

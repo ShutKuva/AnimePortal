@@ -1,6 +1,4 @@
-﻿
-
-using Core.DTOs.Anime;
+﻿using Core.DTOs.Anime;
 
 namespace Adapters.Abstractions
 {
