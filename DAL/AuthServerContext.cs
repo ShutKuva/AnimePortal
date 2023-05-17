@@ -1,8 +1,5 @@
 ﻿using Core.DB;
-using Core.DTOs;
-using Core.DTOs.Anime;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DAL
 {
@@ -17,16 +14,6 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Anime>()
-                .Property(a => a.Tags)
-                .HasConversion(
-                    tags => string.Join(",", tags),
-                    tagsString => tagsString.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    new ValueComparer<ICollection<string>>((c1, c2) => c1.SequenceEqual(c2),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToHashSet())
-                );
-
             modelBuilder.Entity<AnimeDescription>()
                 .HasMany(e => e.Genres)
                 .WithMany(e => e.AnimeDescriptions);

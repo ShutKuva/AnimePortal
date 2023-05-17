@@ -27,6 +27,7 @@ namespace DAL.Repositories
                 .ThenInclude(l => l!.Language)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(a => a!.Genres)
+                .Include(a=> a.Tags)
                 .FirstOrDefaultAsync(user => user.Id == id);
             return anime;
         }
@@ -68,6 +69,7 @@ namespace DAL.Repositories
                 .ThenInclude(a => a!.Language)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(a => a!.Genres)
+                .Include(a => a.Tags)
                 .Take(count);
             return animes;
         }
@@ -83,6 +85,7 @@ namespace DAL.Repositories
                 .ThenInclude(a => a!.Language)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(a => a!.Genres)
+                .Include(a => a.Tags)
                 .Take(count);
 
             return animes;

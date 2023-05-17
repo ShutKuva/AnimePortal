@@ -54,5 +54,10 @@ namespace DAL.Repositories
                 _context.Genres.Remove(genre);
             }
         }
+
+        public async Task<ICollection<Genre>> GetAllGenressAsync()
+        {
+            return await _context.Genres.ToListAsync();
+        }
     }
 }

@@ -38,6 +38,11 @@ namespace AnimePortalAuthServer.Mapper
                     opt => opt.MapFrom(src => src.Name))
                 .ReverseMap();
 
+            CreateMap<Tag, TagDto>()
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
+
             CreateMap<Genre, GenreDto>()
                 .ForMember(dest => dest.Name,
                     opt => opt.MapFrom(src => src.Name))

@@ -16,14 +16,16 @@ namespace Services
         private readonly IUnitOfWork _uow;
         private readonly IPhotoService _photoService;
         private readonly ILanguageService _languageService;
+        private readonly IGenreService _genreService;
         private readonly IMapper _mapper;
 
-        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService)
+        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService, IGenreService genreService)
         {
             _uow = uow;
             _mapper = mapper;
             _photoService = photoService;
             _languageService = languageService;
+            _genreService = genreService;
         }
 
         public async Task CreateAsync(AnimeDto? animeDto)

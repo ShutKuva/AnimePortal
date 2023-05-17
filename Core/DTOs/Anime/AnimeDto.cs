@@ -1,10 +1,12 @@
 ﻿
+using Core.DTOs.Others;
+
 namespace Core.DTOs.Anime
 {
     public class AnimeDto
     {
         public ICollection<AnimeDescriptionDto?> AnimeDescription { get; set; } = new List<AnimeDescriptionDto?>();
-        public ICollection<string>? Tags { get; set; } = new HashSet<string>();
+        public ICollection<TagDto>? Tags { get; set; } = new HashSet<TagDto>();
         public string Duration { get; set; } = string.Empty;
         public string Studio { get; set; } = string.Empty;
         public float Rating { get; set; } = 0.0f;

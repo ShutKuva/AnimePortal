@@ -1,4 +1,6 @@
-﻿namespace Core.DTOs.Anime
+﻿using Core.DTOs.Others;
+
+namespace Core.DTOs.Anime
 {
     public class AnimePreview
     {
@@ -9,6 +11,6 @@
         public string Duration { get; set; } = string.Empty;
         public string Spotlight { get; set; } = string.Empty;
         public AnimeDescriptionDto? AnimeDescription { get; set; }
-        public ICollection<string>? Tags { get; set; } = new HashSet<string>();
+        public ICollection<TagDto>? Tags { get; set; } = new HashSet<TagDto>();
     }
 }

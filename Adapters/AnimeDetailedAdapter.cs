@@ -50,7 +50,7 @@ namespace Adapters
 
             if (animePreview.AnimeDescription?.Language == null)
             {
-                throw new NotFoundException("language not found");
+                throw new NotFoundException("Language not found");
             }
 
             return animePreview;
