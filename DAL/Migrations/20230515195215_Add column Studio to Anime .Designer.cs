@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    partial class AuthServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230515195215_Add column Studio to Anime ")]
+    partial class AddcolumnStudiotoAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,6 +63,9 @@ namespace DAL.Migrations
 
                     b.Property<string>("Studio")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tags")
                         .HasColumnType("text");
 
                     b.Property<string>("VideoUrl")
@@ -180,28 +186,6 @@ namespace DAL.Migrations
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("Core.DB.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AnimeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.ToTable("Tag");
-                });
-
             modelBuilder.Entity("Core.DB.User", b =>
                 {
                     b.Property<int>("Id")
@@ -276,20 +260,11 @@ namespace DAL.Migrations
                         .HasForeignKey("AnimeId");
                 });
 
-            modelBuilder.Entity("Core.DB.Tag", b =>
-                {
-                    b.HasOne("Core.DB.Anime", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("AnimeId");
-                });
-
             modelBuilder.Entity("Core.DB.Anime", b =>
                 {
                     b.Navigation("AnimeDescriptions");
 
                     b.Navigation("Photos");
-
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

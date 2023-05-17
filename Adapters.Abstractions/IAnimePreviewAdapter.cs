@@ -1,10 +1,10 @@
 ﻿using Core.DTOs.Anime;
 
-namespace BLL.Abstractions.Interfaces.Adapters
+namespace Adapters.Abstractions
 {
     public interface IAnimePreviewAdapter
     {
-        Task<AnimePreview>GetAnimePreviewAsync(int animeId);
-        Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quanitity);
+        Task<AnimePreview>GetAnimePreviewAsync(int animeId, string language);
+        Task<ICollection<AnimePreview>> GetAnimePreviewsAsync(int quantity, string language);
     }
 }

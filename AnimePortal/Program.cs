@@ -1,11 +1,12 @@
+using System.Text.Json.Serialization;
+using Adapters;
+using Adapters.Abstractions;
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
 using BLL;
 using BLL.Abstractions.Interfaces;
-using BLL.Abstractions.Interfaces.Adapters;
 using BLL.Abstractions.Interfaces.Jwt;
-using BLL.Adapters;
 using BLL.Jwt;
 using Core.DB;
 using Core.DI;
@@ -19,8 +20,26 @@ using Microsoft.IdentityModel.Tokens;
 using Services;
 using Services.Abstraction;
 using Services.Abstraction.Interfaces;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(o =>
+{
+    o.AddPolicy("DevCorsPolicy", config =>
+    {
+        config.AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            config.WithOrigins(builder.Configuration["Origins:Test"]);
+        }
+        else
+        {
+            config.WithOrigins(builder.Configuration["ORIGIN_TEST"]);
+        }
+    });
+});
 
 // Add services to the container.
 
@@ -28,7 +47,7 @@ builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(
         new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
-});
+}).AddJsonOptions(x=> x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -64,6 +83,9 @@ builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
 builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IAnimeDetailedAdapter, AnimeDetailedAdapter>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
 
 //Configurations
@@ -123,7 +145,7 @@ app.UseMigration();
 
 app.UseHttpsRedirection();
 
-app.UseCors(config => config.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+app.UseCors("DevCorsPolicy");
 
 app.UseAuthorization();
 

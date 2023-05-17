@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    partial class AuthServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230510193636_Update Anime, add language, genre")]
+    partial class UpdateAnimeaddlanguagegenre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AnimeDescriptionGenre", b =>
-                {
-                    b.Property<int>("AnimeDescriptionsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GenresId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AnimeDescriptionsId", "GenresId");
-
-                    b.HasIndex("GenresId");
-
-                    b.ToTable("AnimeDescriptionGenre");
-                });
 
             modelBuilder.Entity("Core.DB.Anime", b =>
                 {
@@ -58,8 +46,7 @@ namespace DAL.Migrations
                     b.Property<float?>("Rating")
                         .HasColumnType("real");
 
-                    b.Property<string>("Studio")
-                        .IsRequired()
+                    b.Property<string>("Tags")
                         .HasColumnType("text");
 
                     b.Property<string>("VideoUrl")
@@ -121,13 +108,18 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AnimeDescriptionId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.HasIndex("AnimeDescriptionId");
+
+                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("Core.DB.Language", b =>
@@ -180,28 +172,6 @@ namespace DAL.Migrations
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("Core.DB.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AnimeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.ToTable("Tag");
-                });
-
             modelBuilder.Entity("Core.DB.User", b =>
                 {
                     b.Property<int>("Id")
@@ -237,24 +207,9 @@ namespace DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AnimeDescriptionGenre", b =>
-                {
-                    b.HasOne("Core.DB.AnimeDescription", null)
-                        .WithMany()
-                        .HasForeignKey("AnimeDescriptionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.DB.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Core.DB.AnimeDescription", b =>
                 {
-                    b.HasOne("Core.DB.Anime", null)
+                    b.HasOne("Core.DB.Anime", "Anime")
                         .WithMany("AnimeDescriptions")
                         .HasForeignKey("AnimeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -266,7 +221,16 @@ namespace DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Anime");
+
                     b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("Core.DB.Genre", b =>
+                {
+                    b.HasOne("Core.DB.AnimeDescription", null)
+                        .WithMany("Genres")
+                        .HasForeignKey("AnimeDescriptionId");
                 });
 
             modelBuilder.Entity("Core.DB.Photo", b =>
@@ -276,20 +240,16 @@ namespace DAL.Migrations
                         .HasForeignKey("AnimeId");
                 });
 
-            modelBuilder.Entity("Core.DB.Tag", b =>
-                {
-                    b.HasOne("Core.DB.Anime", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("AnimeId");
-                });
-
             modelBuilder.Entity("Core.DB.Anime", b =>
                 {
                     b.Navigation("AnimeDescriptions");
 
                     b.Navigation("Photos");
+                });
 
-                    b.Navigation("Tags");
+            modelBuilder.Entity("Core.DB.AnimeDescription", b =>
+                {
+                    b.Navigation("Genres");
                 });
 #pragma warning restore 612, 618
         }

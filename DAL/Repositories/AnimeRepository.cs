@@ -22,8 +22,14 @@ namespace DAL.Repositories
 
         public async Task<Anime?> ReadAsync(int id)
         {
-            var user = await _context.Animes.Include(p=> p.Photos).FirstOrDefaultAsync(user => user.Id == id);
-            return user;
+            var anime = await _context.Animes.Include(p => p.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(l => l!.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Genres)
+                .Include(a=> a.Tags)
+                .FirstOrDefaultAsync(user => user.Id == id);
+            return anime;
         }
 
         public async Task<IEnumerable<Anime>> ReadByConditionAsync(Expression<Func<Anime, bool>> predicate)
@@ -58,10 +64,32 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            IQueryable<Anime> animes = _context.Animes.Include(p =>p.Photos).Take(count);
+            IQueryable<Anime> animes = _context.Animes.Include(a => a.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Genres)
+                .Include(a => a.Tags)
+                .Take(count);
             return animes;
         }
 
+        public IQueryable<Anime> GetAnimeByCount(int count, string language)
+        {
+            IQueryable<Anime> animes = _context.Animes
+                .SelectMany(anime => anime.AnimeDescriptions, (anime, animeDescriptions) => new { anime, animeDescriptions })
+                .Where(animeData => animeData.animeDescriptions!.Language!.Name == language)
+                .Select(animeData => animeData.anime)
+                .Include(a => a.Photos)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Language)
+                .Include(a => a.AnimeDescriptions)
+                .ThenInclude(a => a!.Genres)
+                .Include(a => a.Tags)
+                .Take(count);
+
+            return animes;
+        }
     }
 }
 

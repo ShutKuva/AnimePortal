@@ -1,15 +1,21 @@
-﻿using Core.Enums;
+﻿
+using Core.DTOs.Others;
 
 namespace Core.DTOs.Anime
 {
     public class AnimeDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Placement { get; set; } = string.Empty;
+        public ICollection<AnimeDescriptionDto?> AnimeDescription { get; set; } = new List<AnimeDescriptionDto?>();
+        public ICollection<TagDto>? Tags { get; set; } = new HashSet<TagDto>();
         public string Duration { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Author { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
-        public VideoTags? Tags { get; set; }
+        public string Studio { get; set; } = string.Empty;
+        public float Rating { get; set; } = 0.0f;
+        private DateTime _date;
+
+        public DateTime Date
+        {
+            get => _date;
+            set => _date = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
     }
 }
