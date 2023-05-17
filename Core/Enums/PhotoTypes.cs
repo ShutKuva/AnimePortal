@@ -3,6 +3,7 @@
     public enum PhotoTypes
     {
         Previews,
+        Spotlight,
         Screenshots
     }
 }

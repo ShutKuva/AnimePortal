@@ -1,14 +1,13 @@
-﻿using System.Runtime.InteropServices;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Core.DB;
 using Core.DI;
+using Core.Enums;
 using Core.Exceptions;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Services.Abstraction;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Services
 {
@@ -30,7 +29,7 @@ namespace Services
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<Photo> UploadPhotoAsync(IFormFile photo)
+        public async Task<Photo> UploadPhotoAsync(IFormFile photo, PhotoTypes photoTypes = PhotoTypes.Screenshots)
         {
             var uploadResult = new ImageUploadResult();
             if (photo.Length > 0)
@@ -48,25 +47,26 @@ namespace Services
                 throw new InvalidOperationException(uploadResult.Error.Message);
             }
 
-            var image = await CreatePhotoAsync(uploadResult);
+            var image = await CreatePhotoAsync(uploadResult, photoTypes);
 
             return image;
         }
 
-        public async Task<Photo> CreatePhotoAsync(ImageUploadResult result)
+        public async Task<Photo> CreatePhotoAsync(ImageUploadResult result, PhotoTypes photoTypes = PhotoTypes.Screenshots)
         {
             var photo = new Photo()
             {
                 ImageUrl = result.Url.AbsoluteUri,
                 Title = result.OriginalFilename,
-                PublicId = result.PublicId
+                PublicId = result.PublicId,
+                PhotoType = photoTypes
             };
 
             await _uow.PhotoRepository.CreateAsync(photo);
             await _uow.SaveChangesAsync();
 
             return photo;
-        } 
+        }
 
         public async Task<DeletionResult> DeletePhotoAsync(int photoId)
         {
@@ -85,5 +85,6 @@ namespace Services
                         throw new NotFoundException($"Resource with id {id} was not found.");
             return photo;
         }
+
     }
 }
