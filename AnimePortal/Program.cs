@@ -123,7 +123,7 @@ app.UseMigration();
 
 app.UseHttpsRedirection();
 
-app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(config => config.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 app.UseAuthorization();
 
