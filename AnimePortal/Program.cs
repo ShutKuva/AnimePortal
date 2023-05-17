@@ -22,6 +22,23 @@ using Services.Abstraction.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(o =>
+{
+    o.AddPolicy("DevCorsPolicy", config =>
+    {
+        config.AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            config.WithOrigins(builder.Configuration["Origins:Test"]);
+        }
+        else
+        {
+            config.WithOrigins(builder.Configuration["ORIGIN_TEST"]);
+        }
+    });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers(options =>
@@ -123,7 +140,7 @@ app.UseMigration();
 
 app.UseHttpsRedirection();
 
-app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors("DevCorsPolicy");
 
 app.UseAuthorization();
 
