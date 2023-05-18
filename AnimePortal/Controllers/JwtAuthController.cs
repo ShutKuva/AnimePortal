@@ -36,6 +36,14 @@ namespace AnimePortal.Controllers
             return Ok(result);
         }
 
+        [HttpGet("logout")]
+        public OkResult Logout()
+        {
+            Response.Cookies.Delete(CookieConstants.REFRESH_CODE_COOKIE_NAME);
+
+            return Ok();
+        } 
+
         [HttpPost("refresh")]
         public async Task<ActionResult<IUserDto>> RefreshJwtTokenAsync()
         {
