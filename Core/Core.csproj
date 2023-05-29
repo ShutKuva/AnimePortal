@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
   </ItemGroup>
