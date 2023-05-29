@@ -15,13 +15,11 @@ namespace BLL.Jwt
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtTokenHandler _tokenHandler;
-        private readonly JwtConfigurations _jwtConfigurations;
 
-        public JwtUserService(IUnitOfWork unitOfWork, IJwtTokenHandler tokenHandler, IOptions<JwtConfigurations> jwtConfigurations)
+        public JwtUserService(IUnitOfWork unitOfWork, IJwtTokenHandler tokenHandler)
         {
             _unitOfWork = unitOfWork;
             _tokenHandler = tokenHandler;
-            _jwtConfigurations = jwtConfigurations.Value ?? throw new ArgumentException(nameof(jwtConfigurations));
         }
 
         public async Task<JwtUserDto> RegisterNewUserAsync(RegisterUser registerUser)
@@ -90,7 +88,6 @@ namespace BLL.Jwt
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             user.RefreshToken = handler.WriteToken(GenerateJwtRefreshTokenForUser(user));
-            user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime).ToUniversalTime();
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
