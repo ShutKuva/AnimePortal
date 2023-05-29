@@ -14,6 +14,7 @@ using Core.DTOs.Jwt;
 using DAL;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,7 @@ using Services;
 using Services.Abstraction;
 using Services.Abstraction.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +55,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Auth
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddCookie().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
     {
@@ -61,7 +67,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = false,
         ValidateLifetime = true,
     };
+}).AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["GOOGLE:ClientId"];
+    options.ClientSecret = builder.Configuration["GOOGLE:ClientSecret"];
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 });
+
 builder.Services.AddAuthorization();
 
 //Services
@@ -126,7 +138,6 @@ builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>
     }
 });
 
-
 //Mapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -138,7 +149,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseExceptionHandler();
 
 app.UseMigration();
@@ -147,6 +157,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("DevCorsPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
