@@ -23,6 +23,7 @@ using Services.Abstraction;
 using Services.Abstraction.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,8 +70,16 @@ builder.Services.AddAuthentication(options =>
     };
 }).AddGoogle(options =>
 {
-    options.ClientId = builder.Configuration["GOOGLE:ClientId"];
-    options.ClientSecret = builder.Configuration["GOOGLE:ClientSecret"];
+    if (builder.Environment.IsDevelopment())
+    {
+        options.ClientId = builder.Configuration["GOOGLE:ClientId"];
+        options.ClientSecret = builder.Configuration["GOOGLE:ClientSecret"];
+    }
+    else
+    {
+        options.ClientId = builder.Configuration["GOOGLE_CLIENT_ID"];
+        options.ClientSecret = builder.Configuration["GOOGLE_CLIENT_SECRET"];
+    }
     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 });
 
