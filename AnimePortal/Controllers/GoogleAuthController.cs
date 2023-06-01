@@ -57,6 +57,8 @@ namespace AnimePortalAuthServer.Controllers
             Response.Cookies.Append(CookieConstants.REFRESH_CODE_COOKIE_NAME, user.RefreshToken, new CookieOptions()
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
             });
 
             return new JwtOnlyTokenDto
