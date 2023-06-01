@@ -59,7 +59,7 @@ namespace BLL.Jwt
 
         public async Task<JwtUserDto> RefreshUserAsync(RefreshUser refreshUser)
         {
-            ClaimsPrincipal cp = _tokenHandler.ValidateToken(refreshUser.RefreshToken);
+            ClaimsPrincipal cp = _tokenHandler.ValidateToken(refreshUser.RefreshToken, true);
 
             bool successful = int.TryParse(cp.Claims.FirstOrDefault(claim => claim.Type == UserClaimNames.Id)?.Value, out int id);
 
