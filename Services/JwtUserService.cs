@@ -8,8 +8,9 @@ using Microsoft.Extensions.Options;
 using Services.Abstraction.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using BLL;
 
-namespace BLL.Jwt
+namespace Services
 {
     public class JwtUserService : IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>
     {

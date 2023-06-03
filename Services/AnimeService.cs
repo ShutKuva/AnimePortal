@@ -7,7 +7,6 @@ using Core.Enums;
 using Core.Exceptions;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Services.Abstraction;
 using Services.Abstraction.Interfaces;
 
 namespace Services
@@ -94,7 +93,7 @@ namespace Services
             return await UpdateAnimeAsync(anime);
         }
 
-        public async Task<CommentDto> AddAnimeComment(int animeId, string text, int parentCommentId = 0)
+        public async Task<CommentDto> AddAnimeComment(int animeId, string text, int? parentCommentId = null)
         {
             Anime anime = await GetAnimeAsync(animeId);
             
@@ -107,9 +106,8 @@ namespace Services
             return commentDto;
         }
 
-        public async Task<CommentDto> ChangeAnimeComment(int animeId, int commentId, string text)
+        public async Task<CommentDto> UpdateAnimeComment(int animeId, int commentId, string text)
         {
-            Anime anime = await GetAnimeAsync(animeId);
             Comment comment = await _commentService.UpdateCommentAsync(commentId, text);
 
             await _uow.SaveChangesAsync();
@@ -117,7 +115,7 @@ namespace Services
         }
 
 
-        public async Task RemoveAnimeComment(int animeId, int commentId)
+        public async Task DeleteAnimeComment(int animeId, int commentId)
         {
             Comment comment = await _commentService.GetCommentAsync(commentId);
             Anime anime = await GetAnimeAsync(animeId);
@@ -191,8 +189,7 @@ namespace Services
                     throw new InvalidOperationException($"Anime with Title {aD.Title} already exists.");
                 }
 
-                var language = await _languageService.GetLanguageByNameAsync(aD.Language!.Name);
-                if (language != null)
+                if (await _languageService.GetLanguageByNameAsync(aD.Language!.Name) is { } language)
                 {
                     aD.Language = language;
                 }

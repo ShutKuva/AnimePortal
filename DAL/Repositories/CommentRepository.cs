@@ -16,12 +16,12 @@ namespace DAL.Repositories
         }
         public async Task CreateAsync(Comment entity)
         {
-            await _context.Comentaries.AddAsync(entity);
+            await _context.Comments.AddAsync(entity);
         }
 
         public async Task<Comment?> ReadAsync(int id)
         {
-            var comment = await _context.Comentaries
+            var comment = await _context.Comments
                 .Include(c => c.ParentComment)
                 .FirstOrDefaultAsync(c => c.Id == id);
             return comment;
@@ -29,7 +29,7 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<Comment>> ReadByConditionAsync(Expression<Func<Comment, bool>> predicate)
         {
-            var commentaries = await _context.Comentaries.Where(predicate).ToListAsync();
+            var commentaries = await _context.Comments.Where(predicate).ToListAsync();
             return commentaries;
         }
 
@@ -53,7 +53,7 @@ namespace DAL.Repositories
             var comment = await ReadAsync(id);
             if (comment != null)
             {
-                _context.Comentaries.Remove(comment);
+                _context.Comments.Remove(comment);
             }
         }
     }

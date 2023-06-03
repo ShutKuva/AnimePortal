@@ -2,17 +2,17 @@
 using Core.DB;
 using Core.DTOs.Others;
 using Core.Exceptions;
-using DAL;
+using DAL.Abstractions.Interfaces;
 using Services.Abstraction.Interfaces;
 
 namespace Services
 {
     public class CommentService : ICommentService
     {
-        private readonly UnitOfWork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public CommentService(UnitOfWork uow, IMapper mapper)
+        public CommentService(IUnitOfWork uow, IMapper mapper)
         {
             _uow = uow;
             _mapper = mapper;
