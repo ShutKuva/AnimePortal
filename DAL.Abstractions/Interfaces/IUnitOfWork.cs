@@ -8,6 +8,7 @@ namespace DAL.Abstractions.Interfaces
         IPhotoRepository PhotoRepository { get; }
         ILanguageRepository LanguageRepository { get; }
         IGenreRepository GenreRepository { get; }
+        ICommentRepository CommentRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }

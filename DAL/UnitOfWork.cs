@@ -16,6 +16,7 @@ namespace DAL
         public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
         public ILanguageRepository LanguageRepository => new LanguageRepository(_context);
         public IGenreRepository GenreRepository => new GenreRepository(_context);
+        public ICommentRepository CommentRepository => new CommentRepository(_context);
 
         public void SaveChanges()
         {

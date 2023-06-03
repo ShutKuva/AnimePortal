@@ -9,6 +9,7 @@ namespace DAL
         public DbSet<Anime> Animes { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<Comment> Comentaries { get; set; }
         public DbSet<Language> Languages { get; set; }
         public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options) { }
 

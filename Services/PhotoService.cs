@@ -7,7 +7,7 @@ using Core.Exceptions;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Services.Abstraction;
+using Services.Abstraction.Interfaces;
 
 namespace Services
 {
