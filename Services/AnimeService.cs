@@ -2,11 +2,11 @@
 using CloudinaryDotNet.Actions;
 using Core.DB;
 using Core.DTOs.Anime;
+using Core.DTOs.Others;
 using Core.Enums;
 using Core.Exceptions;
 using DAL.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Services.Abstraction;
 using Services.Abstraction.Interfaces;
 
 namespace Services
@@ -16,16 +16,16 @@ namespace Services
         private readonly IUnitOfWork _uow;
         private readonly IPhotoService _photoService;
         private readonly ILanguageService _languageService;
-        private readonly IGenreService _genreService;
+        private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
 
-        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService, IGenreService genreService)
+        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService, ICommentService commentService)
         {
             _uow = uow;
             _mapper = mapper;
             _photoService = photoService;
             _languageService = languageService;
-            _genreService = genreService;
+            _commentService = commentService;
         }
 
         public async Task CreateAsync(AnimeDto? animeDto)
@@ -93,6 +93,39 @@ namespace Services
             return await UpdateAnimeAsync(anime);
         }
 
+        public async Task<CommentDto> AddAnimeComment(int animeId, string text, int? parentCommentId = null)
+        {
+            Anime anime = await GetAnimeAsync(animeId);
+            
+            Comment comment = await _commentService.CreateCommentAsync(new(){Text = text, ParentCommentId = parentCommentId});
+            anime.Comments.Add(comment);
+
+            await _uow.SaveChangesAsync();
+
+            CommentDto commentDto = _mapper.Map<CommentDto>(comment);
+            return commentDto;
+        }
+
+        public async Task<CommentDto> UpdateAnimeComment(int animeId, int commentId, string text)
+        {
+            Comment comment = await _commentService.UpdateCommentAsync(commentId, text);
+
+            await _uow.SaveChangesAsync();
+            return _mapper.Map<CommentDto>(comment);
+        }
+
+
+        public async Task DeleteAnimeComment(int animeId, int commentId)
+        {
+            Comment comment = await _commentService.GetCommentAsync(commentId);
+            Anime anime = await GetAnimeAsync(animeId);
+
+            anime.Comments.Remove(comment);
+            await _commentService.DeleteCommentAsync(commentId);
+
+            await _uow.SaveChangesAsync();
+        }
+
         public async Task DeleteAnimeAsync(int animeId)
         {
             Anime anime = await GetAnimeAsync(animeId);
@@ -156,8 +189,7 @@ namespace Services
                     throw new InvalidOperationException($"Anime with Title {aD.Title} already exists.");
                 }
 
-                var language = await _languageService.GetLanguageByNameAsync(aD.Language!.Name);
-                if (language != null)
+                if (await _languageService.GetLanguageByNameAsync(aD.Language!.Name) is { } language)
                 {
                     aD.Language = language;
                 }

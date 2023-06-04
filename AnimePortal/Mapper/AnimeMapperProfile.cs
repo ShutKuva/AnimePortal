@@ -33,20 +33,7 @@ namespace AnimePortalAuthServer.Mapper
                     opt => opt.MapFrom(src => src.Genres))
                 .ReverseMap();
 
-            CreateMap<Language, LanguageDto>()
-                .ForMember(dest => dest.Name,
-                    opt => opt.MapFrom(src => src.Name))
-                .ReverseMap();
-
-            CreateMap<Tag, TagDto>()
-                .ForMember(dest => dest.Name,
-                    opt => opt.MapFrom(src => src.Name))
-                .ReverseMap();
-
-            CreateMap<Genre, GenreDto>()
-                .ForMember(dest => dest.Name,
-                    opt => opt.MapFrom(src => src.Name))
-                .ReverseMap();
+            
 
             CreateMap<Anime, AnimeDetailed>()
                 .ForMember(dest => dest.Poster,
@@ -63,7 +50,9 @@ namespace AnimePortalAuthServer.Mapper
                 {
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
                     return src.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == desiredLanguage?.ToLower());
-                })).ReverseMap();
+                }))
+                .ForMember(dest=> dest.Comments, opt=> opt.MapFrom(p=>p.Comments))
+                .ReverseMap();
             CreateMap<Photo, PhotoDto>().ForMember(dest=> dest.PhotoId, opt=> opt.MapFrom(src=>src.Id)).ReverseMap();
         }
     }

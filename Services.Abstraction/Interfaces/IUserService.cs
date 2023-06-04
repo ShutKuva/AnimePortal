@@ -1,5 +1,4 @@
 ﻿using Core.Abstractions.DTOs.Interfaces;
-using Core.DTOs.Jwt;
 
 namespace Services.Abstraction.Interfaces
 {

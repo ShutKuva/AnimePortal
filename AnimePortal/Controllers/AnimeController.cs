@@ -1,6 +1,7 @@
 ﻿using Adapters.Abstractions;
 using Core.DB;
 using Core.DTOs.Anime;
+using Core.DTOs.Others;
 using Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction.Interfaces;
@@ -84,6 +85,22 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(photo);
         }
 
+        [HttpPost("add/comment/{animeId}")]
+        public async Task<ActionResult<Comment>> AddCommentAsync([FromBody]CommentDto commentDto, int animeId)
+        {
+            CommentDto comment = await _animeService.AddAnimeComment(animeId, commentDto.Text!, commentDto.ParentCommentId);
+
+            return Ok(comment);
+        }
+
+        [HttpPost("update/comment/{animeId}")]
+        public async Task<ActionResult<Comment>> UpdateCommentAsync([FromBody] CommentDto commentDto, int animeId)
+        {
+            CommentDto comment = await _animeService.UpdateAnimeComment(animeId, commentDto.Id, commentDto.Text!);
+
+            return Ok(comment);
+        }
+
         [HttpDelete("delete/anime/{animeId}")]
         public async Task<IActionResult> DeleteAnimeAsync(int animeId)
         {
@@ -93,9 +110,16 @@ namespace AnimePortalAuthServer.Controllers
         }
 
         [HttpDelete("delete/photo/{animeId}/{photoId}")]
-        public async Task<IActionResult> DeletePhoto(int animeId, int photoId)
+        public async Task<IActionResult> DeletePhotoAsync(int animeId, int photoId)
         {
             await _animeService.DeleteAnimePhotoAsync(animeId, photoId);
+
+            return Ok("Successfully!");
+        }
+        [HttpDelete("delete/comment/{animeId}/{commentId}")]
+        public async Task<IActionResult> DeleteCommentAsync(int animeId, int commentId)
+        {
+            await _animeService.DeleteAnimeComment(animeId, commentId);
 
             return Ok("Successfully!");
         }
