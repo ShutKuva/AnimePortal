@@ -29,7 +29,7 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(anime);
         }
 
-        [HttpGet("{language}/preview/{animeId}")]
+        [HttpGet("{language}/previews/{animeId}")]
         public async Task<ActionResult<AnimePreview>> GetAnimePreviewAsync(int animeId, string language)
         {
             AnimePreview animePreview = await _animePreviewAdapter.GetAnimePreviewAsync(animeId, language);
@@ -37,7 +37,7 @@ namespace AnimePortalAuthServer.Controllers
             return Ok(animePreview);
         }
 
-        [HttpGet("{language}/previews/Top")]
+        [HttpGet("{language}/previews")]
         public async Task<ActionResult<ICollection<AnimePreview>>> GetAnimePreviewsAsync(string language)
         {
             var animePreivews = await _animePreviewAdapter.GetAnimePreviewsAsync(10, language);

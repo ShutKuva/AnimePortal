@@ -48,14 +48,14 @@ namespace BLL.Jwt
             return token;
         }
 
-        public ClaimsPrincipal ValidateToken(string strToken)
+        public ClaimsPrincipal ValidateToken(string strToken, bool isRefresh)
         {
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             var validationParameters = new TokenValidationParameters()
             {
                 IssuerSigningKey =
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtConfigurations.AccessSecretCode)),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(isRefresh ? _jwtConfigurations.RefreshSecretCode : _jwtConfigurations.AccessSecretCode)),
                 ValidateAudience = false,
                 ValidateIssuer = false,
             };

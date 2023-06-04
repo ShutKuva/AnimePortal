@@ -7,6 +7,6 @@ namespace BLL.Abstractions.Interfaces.Jwt
     {
         JwtSecurityToken CreateAccessToken(List<Claim> claims);
         JwtSecurityToken CreateRefreshToken(List<Claim> claims);
-        ClaimsPrincipal ValidateToken(string token);
+        ClaimsPrincipal ValidateToken(string strToken, bool isRefresh);
     }
 }
