@@ -16,16 +16,16 @@ namespace Services
         private readonly IUnitOfWork _uow;
         private readonly IPhotoService _photoService;
         private readonly ILanguageService _languageService;
-        private readonly IGenreService _genreService;
+        private readonly IRelatedAnimeService _relatedAnimeService;
         private readonly IMapper _mapper;
 
-        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService, IGenreService genreService)
+        public AnimeService(IUnitOfWork uow, IMapper mapper, IPhotoService photoService, ILanguageService languageService, IRelatedAnimeService relatedAnimeService)
         {
             _uow = uow;
             _mapper = mapper;
             _photoService = photoService;
             _languageService = languageService;
-            _genreService = genreService;
+            _relatedAnimeService = relatedAnimeService;
         }
 
         public async Task CreateAsync(AnimeDto? animeDto)
@@ -93,11 +93,36 @@ namespace Services
             return await UpdateAnimeAsync(anime);
         }
 
+        public async Task<RelatedAnime> AddRelatedAnimeAsync(RelatedAnimeDto relatedAnimeDto)
+        {
+            await AddRelatedAnimeAsync(relatedAnimeDto.AnimeId, relatedAnimeDto.RelatedAnimeId);
+            RelatedAnime relatedAnime =
+                await _relatedAnimeService.GetRelatedAnimeAsync(relatedAnimeDto.AnimeId,
+                    relatedAnimeDto.RelatedAnimeId);
+
+            return relatedAnime;
+        }
+
+        private async Task AddRelatedAnimeAsync(int animeId, int relatedAnimeId, bool isFirst = true)
+        {
+            RelatedAnimeDto relatedAnimeDto = new RelatedAnimeDto() { AnimeId = animeId, RelatedAnimeId = relatedAnimeId };
+            Anime anime = await GetAnimeAsync(relatedAnimeDto.AnimeId);
+            if (anime.RelatedAnime.FirstOrDefault(r => r!.AnimeId == animeId && r.RelatedAnimeId == relatedAnimeId) == null)
+            {
+                RelatedAnime relatedAnime = await _relatedAnimeService.CreateRelatedAnimeAsync(relatedAnimeDto);
+
+                anime.RelatedAnime.Add(relatedAnime);
+                await _uow.SaveChangesAsync();
+            }
+            if (isFirst)
+                await AddRelatedAnimeAsync(relatedAnimeId, animeId, false);
+        }
+
         public async Task DeleteAnimeAsync(int animeId)
         {
             Anime anime = await GetAnimeAsync(animeId);
 
-            List<Task<DeletionResult>> tasks = new List<Task<DeletionResult>>(); 
+            List<Task<DeletionResult>> tasks = new List<Task<DeletionResult>>();
             foreach (var photo in anime.Photos!)
             {
                 try
@@ -138,6 +163,7 @@ namespace Services
 
             await _photoService.DeletePhotoAsync(photoId);
         }
+
 
         private async Task<Anime?> GetAnimeByNameAsync(string animeName)
         {

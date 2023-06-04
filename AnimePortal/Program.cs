@@ -83,6 +83,7 @@ builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
 builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<IRelatedAnimeService, RelatedAnimeService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IAnimeDetailedAdapter, AnimeDetailedAdapter>();

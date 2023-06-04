@@ -4,12 +4,13 @@
     {
         public int PostedBy { get; set; }
         public DateTime Date { get; set; }
-        public string Duration { get; set; } = string.Empty;
         public float? Rating { get; set; } = 0.0f;
         public string Studio { get; set; } = string.Empty;
+        public string Duration { get; set; } = string.Empty;
         public string? VideoUrl { get; set; } = string.Empty;
-        public ICollection<Photo>? Photos { get; set; } = new List<Photo>();
         public ICollection<Tag>? Tags { get; set; } = new HashSet<Tag>();
+        public ICollection<Photo>? Photos { get; set; } = new List<Photo>();
+        public ICollection<RelatedAnime?> RelatedAnime { get; set; } = new List<RelatedAnime?>();
         public ICollection<AnimeDescription?> AnimeDescriptions { get; set; } = new List<AnimeDescription?>();
     }
 }

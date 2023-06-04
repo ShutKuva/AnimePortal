@@ -7,6 +7,7 @@ namespace DAL
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Anime> Animes { get; set; }
+        public DbSet<RelatedAnime> RelatedAnime { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Language> Languages { get; set; }

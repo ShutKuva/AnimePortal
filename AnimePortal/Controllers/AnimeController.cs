@@ -75,7 +75,13 @@ namespace AnimePortalAuthServer.Controllers
 
             return Ok(animeDto);
         }
+        [HttpPost("add/seasonal")]
+        public async Task<ActionResult<RelatedAnime>> AddSeasonalAsync([FromBody]RelatedAnimeDto relatedAnimeDto)
+        {
+            RelatedAnime relatedAnime = await _animeService.AddRelatedAnimeAsync(relatedAnimeDto);
 
+            return Ok(relatedAnime);
+        }
         [HttpPost("add/photo/{animeId}/{photoType}")]
         public async Task<ActionResult<Photo>> AddAnimePhoto(IFormFile file, int animeId, PhotoTypes photoType)
         {

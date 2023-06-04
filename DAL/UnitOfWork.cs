@@ -15,6 +15,7 @@ namespace DAL
         public IAnimeRepository AnimeRepository => new AnimeRepository(_context);
         public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
         public ILanguageRepository LanguageRepository => new LanguageRepository(_context);
+        public IRelatedAnimeRepository RelatedAnimeRepository => new RelatedAnimeRepository(_context);
         public IGenreRepository GenreRepository => new GenreRepository(_context);
 
         public void SaveChanges()

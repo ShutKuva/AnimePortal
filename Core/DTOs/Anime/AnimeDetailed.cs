@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core.DB;
 using Core.DTOs.Others;
 
 namespace Core.DTOs.Anime
@@ -9,6 +10,7 @@ namespace Core.DTOs.Anime
         public AnimeDescriptionDto? AnimeDescription { get; set; }
         public ICollection<PhotoDto> Screenshots { get; set; } = new List<PhotoDto>();
         public ICollection<TagDto> Tags { get; set; } = new List<TagDto>();
+        public ICollection<RelatedAnimeDto?> RelatedAnime { get; set; } = new List<RelatedAnimeDto?>();
         public string Poster { get; set; } = string.Empty;
         public string Studio { get; set; } = string.Empty;
         public float Rating { get; set; } = 0.0f;
