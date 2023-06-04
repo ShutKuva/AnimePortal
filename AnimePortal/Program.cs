@@ -6,6 +6,7 @@ using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
 using BLL.Abstractions.Interfaces.Jwt;
 using BLL.Jwt;
+using Core.DB;
 using Core.DI;
 using Core.DTOs.Jwt;
 using Core.DTOs.Others;
@@ -18,8 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services;
 using Services.Abstraction.Interfaces;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
