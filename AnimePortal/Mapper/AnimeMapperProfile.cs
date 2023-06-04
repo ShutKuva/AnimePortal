@@ -67,7 +67,9 @@ namespace AnimePortalAuthServer.Mapper
                 {
                     var desiredLanguage = context.Items["DesiredLanguage"].ToString();
                     return src.AnimeDescriptions.FirstOrDefault(lang => lang?.Language?.Name == desiredLanguage?.ToLower());
-                })).ReverseMap();
+                }))
+                .ForMember(dest=> dest.Comments, opt=> opt.MapFrom(p=>p.Comments))
+                .ReverseMap();
             CreateMap<Photo, PhotoDto>().ForMember(dest=> dest.PhotoId, opt=> opt.MapFrom(src=>src.Id)).ReverseMap();
         }
     }

@@ -4,23 +4,22 @@ using Adapters.Abstractions;
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
-using BLL;
-using BLL.Abstractions.Interfaces;
 using BLL.Abstractions.Interfaces.Jwt;
 using BLL.Jwt;
-using Core.DB;
 using Core.DI;
 using Core.DTOs.Jwt;
+using Core.DTOs.Others;
 using DAL;
 using DAL.Abstractions.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services;
-using Services.Abstraction;
 using Services.Abstraction.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +52,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Auth
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddCookie().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
     {
@@ -61,7 +64,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = false,
         ValidateLifetime = true,
     };
+}).AddGoogle(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        options.ClientId = builder.Configuration["GOOGLE:ClientId"];
+        options.ClientSecret = builder.Configuration["GOOGLE:ClientSecret"];
+    }
+    else
+    {
+        options.ClientId = builder.Configuration["GOOGLE_CLIENT_ID"];
+        options.ClientSecret = builder.Configuration["GOOGLE_CLIENT_SECRET"];
+    }
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 });
+
 builder.Services.AddAuthorization();
 
 //Services
@@ -81,11 +98,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
 
 builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
+builder.Services.AddScoped<IUserService<JwtUserDto, GoogleAuthUser, User, object>, GoogleAuthUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IRelatedAnimeService, RelatedAnimeService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+
 builder.Services.AddScoped<IAnimeDetailedAdapter, AnimeDetailedAdapter>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
 
@@ -127,7 +147,6 @@ builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>
     }
 });
 
-
 //Mapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -139,7 +158,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseExceptionHandler();
 
 app.UseMigration();
@@ -148,6 +166,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("DevCorsPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

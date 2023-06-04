@@ -11,6 +11,7 @@
         public ICollection<Tag>? Tags { get; set; } = new HashSet<Tag>();
         public ICollection<Photo>? Photos { get; set; } = new List<Photo>();
         public ICollection<RelatedAnime?> RelatedAnime { get; set; } = new List<RelatedAnime?>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<AnimeDescription?> AnimeDescriptions { get; set; } = new List<AnimeDescription?>();
     }
 }

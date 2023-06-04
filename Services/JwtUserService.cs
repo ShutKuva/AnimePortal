@@ -8,20 +8,19 @@ using Microsoft.Extensions.Options;
 using Services.Abstraction.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using BLL;
 
-namespace BLL.Jwt
+namespace Services
 {
     public class JwtUserService : IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtTokenHandler _tokenHandler;
-        private readonly JwtConfigurations _jwtConfigurations;
 
-        public JwtUserService(IUnitOfWork unitOfWork, IJwtTokenHandler tokenHandler, IOptions<JwtConfigurations> jwtConfigurations)
+        public JwtUserService(IUnitOfWork unitOfWork, IJwtTokenHandler tokenHandler)
         {
             _unitOfWork = unitOfWork;
             _tokenHandler = tokenHandler;
-            _jwtConfigurations = jwtConfigurations.Value ?? throw new ArgumentException(nameof(jwtConfigurations));
         }
 
         public async Task<JwtUserDto> RegisterNewUserAsync(RegisterUser registerUser)
@@ -61,7 +60,7 @@ namespace BLL.Jwt
 
         public async Task<JwtUserDto> RefreshUserAsync(RefreshUser refreshUser)
         {
-            ClaimsPrincipal cp = _tokenHandler.ValidateToken(refreshUser.RefreshToken);
+            ClaimsPrincipal cp = _tokenHandler.ValidateToken(refreshUser.RefreshToken, true);
 
             bool successful = int.TryParse(cp.Claims.FirstOrDefault(claim => claim.Type == UserClaimNames.Id)?.Value, out int id);
 
@@ -90,7 +89,6 @@ namespace BLL.Jwt
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
 
             user.RefreshToken = handler.WriteToken(GenerateJwtRefreshTokenForUser(user));
-            user.RefreshTokenExpires = DateTime.Now.AddHours(_jwtConfigurations.RefreshLifetime).ToUniversalTime();
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();

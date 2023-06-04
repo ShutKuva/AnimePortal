@@ -1,6 +1,4 @@
-﻿
-
-using Core.DB;
+﻿using Core.DB;
 
 namespace Services.Abstraction.Interfaces
 {

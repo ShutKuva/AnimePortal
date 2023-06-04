@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    partial class AuthServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230528171734_Made user's password hash nullable, removed token expire time")]
+    partial class Madeuserspasswordhashnullableremovedtokenexpiretime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,32 +116,6 @@ namespace DAL.Migrations
                     b.ToTable("AnimeDescription");
                 });
 
-            modelBuilder.Entity("Core.DB.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AnimeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.ToTable("Comments");
-                });
-
             modelBuilder.Entity("Core.DB.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -204,27 +181,6 @@ namespace DAL.Migrations
                     b.HasIndex("AnimeId");
 
                     b.ToTable("Photos");
-                });
-
-            modelBuilder.Entity("Core.DB.RelatedAnime", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnimeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RelatedAnimeId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.ToTable("RelatedAnime");
                 });
 
             modelBuilder.Entity("Core.DB.Tag", b =>
@@ -312,33 +268,11 @@ namespace DAL.Migrations
                     b.Navigation("Language");
                 });
 
-            modelBuilder.Entity("Core.DB.Comment", b =>
-                {
-                    b.HasOne("Core.DB.Anime", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("AnimeId");
-
-                    b.HasOne("Core.DB.Comment", "ParentComment")
-                        .WithMany()
-                        .HasForeignKey("ParentCommentId");
-
-                    b.Navigation("ParentComment");
-                });
-
             modelBuilder.Entity("Core.DB.Photo", b =>
                 {
                     b.HasOne("Core.DB.Anime", null)
                         .WithMany("Photos")
                         .HasForeignKey("AnimeId");
-                });
-
-            modelBuilder.Entity("Core.DB.RelatedAnime", b =>
-                {
-                    b.HasOne("Core.DB.Anime", null)
-                        .WithMany("RelatedAnime")
-                        .HasForeignKey("AnimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Core.DB.Tag", b =>
@@ -352,11 +286,7 @@ namespace DAL.Migrations
                 {
                     b.Navigation("AnimeDescriptions");
 
-                    b.Navigation("Comments");
-
                     b.Navigation("Photos");
-
-                    b.Navigation("RelatedAnime");
 
                     b.Navigation("Tags");
                 });

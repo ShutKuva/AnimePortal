@@ -1,6 +1,4 @@
 ﻿
-using Core.DB;
-
 namespace Core.DTOs.Others
 {
     public class PhotoDto 

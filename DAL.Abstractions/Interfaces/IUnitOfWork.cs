@@ -9,6 +9,7 @@ namespace DAL.Abstractions.Interfaces
         IGenreRepository GenreRepository { get; }
         ILanguageRepository LanguageRepository { get; }
         IRelatedAnimeRepository RelatedAnimeRepository { get; }
+        ICommentRepository CommentRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }
