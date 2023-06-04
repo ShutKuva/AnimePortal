@@ -33,12 +33,29 @@ namespace AnimePortalAuthServer.Mapper
                     opt => opt.MapFrom(src => src.Genres))
                 .ReverseMap();
 
-            
+            CreateMap<RelatedAnime, RelatedAnimeDto>().ReverseMap();
+
+            CreateMap<Language, LanguageDto>()
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
+
+            CreateMap<Tag, TagDto>()
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
+
+            CreateMap<Genre, GenreDto>()
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ReverseMap();
 
             CreateMap<Anime, AnimeDetailed>()
                 .ForMember(dest => dest.Poster,
                     opt => opt.MapFrom(src =>
                         src.Photos!.FirstOrDefault(p => p.PhotoType == PhotoTypes.Previews)!.ImageUrl))
+                .ForMember(dest=> dest.RelatedAnime, 
+                    opt=> opt.MapFrom(src=>src.RelatedAnime))
                 .ForMember(dest => dest.Screenshots,
                     opt => opt.MapFrom(src => src.Photos!.Where(p => p.PhotoType == PhotoTypes.Screenshots)
                         .ToList()))

@@ -38,7 +38,7 @@ namespace Adapters
 
         private AnimeDetailed MapAnimeDetailed(Anime anime, string language)
         {
-            var animePreview =
+            var animeDetailed =
                 _mapper.Map<AnimeDetailed>(anime, options =>
                 {
                     options.Items.Add("DesiredLanguage", $"{language}");
@@ -48,12 +48,12 @@ namespace Adapters
                     });
                 });
 
-            if (animePreview.AnimeDescription?.Language == null)
+            if (animeDetailed.AnimeDescription?.Language == null)
             {
                 throw new NotFoundException("Language not found");
             }
 
-            return animePreview;
+            return animeDetailed;
         }
     }
 }

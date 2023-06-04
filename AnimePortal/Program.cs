@@ -101,6 +101,7 @@ builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, Ref
 builder.Services.AddScoped<IUserService<JwtUserDto, GoogleAuthUser, User, object>, GoogleAuthUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
+builder.Services.AddScoped<IRelatedAnimeService, RelatedAnimeService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<ICommentService, CommentService>();

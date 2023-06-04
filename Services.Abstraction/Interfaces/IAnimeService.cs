@@ -15,6 +15,7 @@ namespace Services.Abstraction.Interfaces
         Task<Anime> UpdateAnimeAsync(Anime anime);
         Task<Anime> UpdateAnimeAsync(AnimeDto animeDto, int animeId);
         Task<Photo> AddAnimePhotoAsync(IFormFile file, int animeId, PhotoTypes photoType = PhotoTypes.Screenshots);
+        Task<RelatedAnime> AddRelatedAnimeAsync(RelatedAnimeDto relatedAnimeDto);
         Task<CommentDto> AddAnimeComment(int animeId, string text, int? parentCommentId = null);
         Task<CommentDto> UpdateAnimeComment(int animeId, int commentId, string text);
         Task DeleteAnimeComment(int animeId, int commentId);

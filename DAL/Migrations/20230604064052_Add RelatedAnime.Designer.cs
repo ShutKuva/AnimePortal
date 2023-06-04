@@ -3,6 +3,7 @@ using System;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AuthServerContext))]
-    partial class AuthServerContextModelSnapshot : ModelSnapshot
+    [Migration("20230604064052_Add RelatedAnime")]
+    partial class AddRelatedAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,32 +114,6 @@ namespace DAL.Migrations
                     b.HasIndex("LanguageId");
 
                     b.ToTable("AnimeDescription");
-                });
-
-            modelBuilder.Entity("Core.DB.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AnimeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ParentCommentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnimeId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Core.DB.Genre", b =>
@@ -266,11 +243,15 @@ namespace DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpires")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Roles")
                         .HasColumnType("integer");
@@ -312,19 +293,6 @@ namespace DAL.Migrations
                     b.Navigation("Language");
                 });
 
-            modelBuilder.Entity("Core.DB.Comment", b =>
-                {
-                    b.HasOne("Core.DB.Anime", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("AnimeId");
-
-                    b.HasOne("Core.DB.Comment", "ParentComment")
-                        .WithMany()
-                        .HasForeignKey("ParentCommentId");
-
-                    b.Navigation("ParentComment");
-                });
-
             modelBuilder.Entity("Core.DB.Photo", b =>
                 {
                     b.HasOne("Core.DB.Anime", null)
@@ -351,8 +319,6 @@ namespace DAL.Migrations
             modelBuilder.Entity("Core.DB.Anime", b =>
                 {
                     b.Navigation("AnimeDescriptions");
-
-                    b.Navigation("Comments");
 
                     b.Navigation("Photos");
 
