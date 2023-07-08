@@ -4,8 +4,12 @@ using Adapters.Abstractions;
 using AnimePortalAuthServer.Extension;
 using AnimePortalAuthServer.Extensions;
 using AnimePortalAuthServer.Transformers;
+using BLL;
+using BLL.Abstractions.Interfaces;
 using BLL.Abstractions.Interfaces.Jwt;
+using BLL.Abstractions.Interfaces.Videos;
 using BLL.Jwt;
+using BLL.Videos;
 using Core.DB;
 using Core.DI;
 using Core.DTOs.Jwt;
@@ -30,11 +34,11 @@ builder.Services.AddCors(o =>
 
         if (builder.Environment.IsDevelopment())
         {
-            config.WithOrigins(builder.Configuration["Origins:Test"]);
+            config.WithOrigins(builder.Configuration["Origins:Test"]!);
         }
         else
         {
-            config.WithOrigins(builder.Configuration["ORIGIN_TEST"]);
+            config.WithOrigins(builder.Configuration["ORIGIN_TEST"]!);
         }
     });
 });
@@ -95,39 +99,47 @@ builder.Services.AddDbContext<AuthServerContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
+builder.Services.AddScoped<IHasher, SHA256Hasher>();
 
 builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
 builder.Services.AddScoped<IUserService<JwtUserDto, GoogleAuthUser, User, object>, GoogleAuthUserService>();
+builder.Services.AddScoped<IVideoPlayerHandler, CloudinaryVideoPlayerHandler>();
+
+builder.Services.AddScoped<IJwtUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IRelatedAnimeService, RelatedAnimeService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
 builder.Services.AddScoped<IAnimeDetailedAdapter, AnimeDetailedAdapter>();
 builder.Services.AddScoped<IAnimePreviewAdapter, AnimePreviewAdapter>();
+builder.Services.AddScoped<IVideoAdapter, AnimeVideoAdapter>();
 
 //Configurations
 builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
 {
     if (builder.Environment.IsDevelopment())
     {
-        jwtConfigurations.Audience = builder.Configuration["JWT:Audience"];
-        jwtConfigurations.Issuer = builder.Configuration["JWT:Issuer"];
-        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT:AccessLifetime"]);
-        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT:RefreshLifetime"]);
-        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT:AccessSecretCode"];
-        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT:RefreshSecretCode"];
+        jwtConfigurations.Audience = builder.Configuration["JWT:Audience"]!;
+        jwtConfigurations.Issuer = builder.Configuration["JWT:Issuer"]!;
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT:AccessLifetime"]!);
+        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT:RefreshLifetime"]!);
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT:AccessSecretCode"]!;
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT:RefreshSecretCode"]!;
     }
     else
     {
-        jwtConfigurations.Audience = builder.Configuration["JWT_AUDIENCE"];
-        jwtConfigurations.Issuer = builder.Configuration["JWT_ISSUER"];
-        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT_ACCESS_LIFETIME"]);
-        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT_REFRESH_LIFETIME"]);
-        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT_ACCESS_SECRET_CODE"];
-        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT_REFRESH_SECRET_CODE"];
+        jwtConfigurations.Audience = builder.Configuration["JWT_AUDIENCE"]!;
+        jwtConfigurations.Issuer = builder.Configuration["JWT_ISSUER"]!;
+        jwtConfigurations.AccessLifetime = int.Parse(builder.Configuration["JWT_ACCESS_LIFETIME"]!);
+        jwtConfigurations.RefreshLifetime = int.Parse(builder.Configuration["JWT_REFRESH_LIFETIME"]!);
+        jwtConfigurations.AccessSecretCode = builder.Configuration["JWT_ACCESS_SECRET_CODE"]!;
+        jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT_REFRESH_SECRET_CODE"]!;
     }
 });
 builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>

@@ -9,9 +9,9 @@ namespace AnimePortal.Controllers
 {
     public class JwtAuthController : BaseController
     {
-        private readonly IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> _userService;
+        private readonly IJwtUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> _userService;
 
-        public JwtAuthController(IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> userService)
+        public JwtAuthController(IJwtUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser> userService)
         {
             _userService = userService;
         }

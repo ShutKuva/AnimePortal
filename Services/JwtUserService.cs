@@ -3,7 +3,6 @@ using Core.ClaimNames;
 using Core.DB;
 using Core.DI;
 using Core.DTOs.Jwt;
-using DAL.Abstractions.Interfaces;
 using Microsoft.Extensions.Options;
 using Services.Abstraction.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,22 +11,22 @@ using BLL;
 
 namespace Services
 {
-    public class JwtUserService : IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>
+    public class JwtUserService : IJwtUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
         private readonly IJwtTokenHandler _tokenHandler;
 
-        public JwtUserService(IUnitOfWork unitOfWork, IJwtTokenHandler tokenHandler)
+        public JwtUserService(IUserService userService, IJwtTokenHandler tokenHandler, IOptions<JwtConfigurations> jwtConfigurations)
         {
-            _unitOfWork = unitOfWork;
+            _userService = userService;
             _tokenHandler = tokenHandler;
         }
 
         public async Task<JwtUserDto> RegisterNewUserAsync(RegisterUser registerUser)
         {
-            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == registerUser.Name || user.Email == registerUser.Email);
+            User? usersWithSameCredentials = await _userService.GetUserAsync(user => user.Name == registerUser.Name || user.Email == registerUser.Email);
 
-            if (usersWithSameCredentials.FirstOrDefault() != null)
+            if (usersWithSameCredentials != null)
             {
                 throw new ArgumentException("User with this credentials has been already registered");
             }
@@ -35,7 +34,7 @@ namespace Services
             User newUser = new User
             {
                 Name = registerUser.Name,
-                PasswordHash = StringHasher.HashStringSHA256(registerUser.Password),
+                PasswordHash = registerUser.Password,
                 Email = registerUser.Email,
             };
 
@@ -44,11 +43,7 @@ namespace Services
 
         public async Task<JwtUserDto> LoginUserAsync(LoginUser loginUser)
         {
-            string hashedPassword = StringHasher.HashStringSHA256(loginUser.Password);
-
-            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => (user.Name == loginUser.NameOrEmail || user.Email == loginUser.NameOrEmail) && user.PasswordHash == hashedPassword);
-
-            User? user = usersWithSameCredentials.FirstOrDefault();
+            User? user = await _userService.GetUserByCredentialsAsync(loginUser.NameOrEmail, loginUser.Password);
 
             if (user == null)
             {
@@ -69,7 +64,7 @@ namespace Services
                 throw new ArgumentException("Unable to read user's id");
             }
 
-            User? user = await _unitOfWork.UserRepository.ReadAsync(id);
+            User? user = await _userService.GetUserAsync(u => u.Id == id);
 
             if (user == null)
             {
@@ -90,8 +85,7 @@ namespace Services
 
             user.RefreshToken = handler.WriteToken(GenerateJwtRefreshTokenForUser(user));
 
-            await _unitOfWork.UserRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync();
+            await _userService.CreateUserAsync(user);
 
             JwtSecurityToken token = GenerateJwtAccessTokenForUser(user);
 
@@ -104,9 +98,9 @@ namespace Services
 
         public async Task<bool> DoesNameOrEmailExist(string nameOrEmail)
         {
-            IEnumerable<User> users = await _unitOfWork.UserRepository.ReadByConditionAsync(user => user.Name == nameOrEmail || user.Email == nameOrEmail);
+            User? user = await _userService.GetUserAsync(u => u.Name == nameOrEmail || u.Email == nameOrEmail);
 
-            return users.Any();
+            return user != null;
         }
 
         private JwtSecurityToken GenerateJwtAccessTokenForUser(User user)

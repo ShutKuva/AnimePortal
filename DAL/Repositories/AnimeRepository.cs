@@ -6,23 +6,15 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DAL.Repositories
 {
-    public class AnimeRepository : IAnimeRepository
+    public class AnimeRepository : GenericRepository<Anime>, IAnimeRepository
     {
-        private readonly AuthServerContext _context;
-
-        public AnimeRepository(AuthServerContext context)
+        public AnimeRepository(AuthServerContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task CreateAsync(Anime entity)
+        public override async Task<Anime?> ReadAsync(int id)
         {
-            await _context.Animes.AddAsync(entity);
-        }
-
-        public async Task<Anime?> ReadAsync(int id)
-        {
-            var anime = await _context.Animes.Include(p => p.Photos)
+            var anime = await context.Animes.Include(p => p.Photos)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(l => l!.Language)
                 .Include(a => a.AnimeDescriptions)
@@ -34,39 +26,9 @@ namespace DAL.Repositories
             return anime;
         }
 
-        public async Task<IEnumerable<Anime>> ReadByConditionAsync(Expression<Func<Anime, bool>> predicate)
-        {
-            var animes = await _context.Animes.Where(predicate).ToListAsync();
-            return animes;
-        }
-
-        public async Task UpdateAsync(Anime entity)
-        {
-            Anime? oldEntity = await ReadAsync(entity.Id);
-
-            if (oldEntity == null)
-            {
-                await CreateAsync(entity);
-            }
-            else
-            {
-                EntityEntry<Anime> entityEntry = _context.Entry(oldEntity);
-                entityEntry.CurrentValues.SetValues(entity);
-            }
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var anime = await ReadAsync(id);
-            if (anime != null)
-            {
-                _context.Animes.Remove(anime);
-            }
-        }
-
         public IQueryable<Anime> GetAnimeByCount(int count)
         {
-            IQueryable<Anime> animes = _context.Animes.Include(a => a.Photos)
+            IQueryable<Anime> animes = context.Animes.Include(a => a.Photos)
                 .Include(a => a.AnimeDescriptions)
                 .ThenInclude(a => a!.Language)
                 .Include(a => a.AnimeDescriptions)
@@ -80,7 +42,7 @@ namespace DAL.Repositories
 
         public IQueryable<Anime> GetAnimeByCount(int count, string language)
         {
-            IQueryable<Anime> animes = _context.Animes
+            IQueryable<Anime> animes = context.Animes
                 .SelectMany(anime => anime.AnimeDescriptions, (anime, animeDescriptions) => new { anime, animeDescriptions })
                 .Where(animeData => animeData.animeDescriptions!.Language!.Name == language)
                 .Select(animeData => animeData.anime)

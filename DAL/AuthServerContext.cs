@@ -1,4 +1,5 @@
 ﻿using Core.DB;
+using Core.DB.Videos;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL
@@ -12,6 +13,9 @@ namespace DAL
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Language> Languages { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<CloudinaryVideo> CloudinaryVideos { get; set; }
+
         public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

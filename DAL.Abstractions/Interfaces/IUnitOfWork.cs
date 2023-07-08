@@ -10,6 +10,10 @@ namespace DAL.Abstractions.Interfaces
         ILanguageRepository LanguageRepository { get; }
         IRelatedAnimeRepository RelatedAnimeRepository { get; }
         ICommentRepository CommentRepository { get; }
+        IVideoRepository VideoRepository { get; }
+        ILocalizationRepository LocalizationRepository { get; }
+        ICloudinaryVideoRepository CloudinaryVideoRepository { get; }
+        IPlayerRepository PlayerRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }

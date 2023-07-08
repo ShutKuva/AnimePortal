@@ -1,5 +1,6 @@
 ﻿using DAL.Abstractions.Interfaces;
 using DAL.Repositories;
+using DAL.Repositories.VideoRepositories;
 
 namespace DAL
 {
@@ -18,6 +19,10 @@ namespace DAL
         public IRelatedAnimeRepository RelatedAnimeRepository => new RelatedAnimeRepository(_context);
         public IGenreRepository GenreRepository => new GenreRepository(_context);
         public ICommentRepository CommentRepository => new CommentRepository(_context);
+        public IVideoRepository VideoRepository => new VideoRepository(_context);
+        public ILocalizationRepository LocalizationRepository => new LocalizationRepository(_context);
+        public ICloudinaryVideoRepository CloudinaryVideoRepository => new CloudinaryVideoRepository(_context);
+        public IPlayerRepository PlayerRepository => new PlayerRepository(_context);
 
         public void SaveChanges()
         {

@@ -13,5 +13,6 @@
         public ICollection<RelatedAnime?> RelatedAnime { get; set; } = new List<RelatedAnime?>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<AnimeDescription?> AnimeDescriptions { get; set; } = new List<AnimeDescription?>();
+        public ICollection<Localization> Localizations { get; set; } = new List<Localization>();
     }
 }

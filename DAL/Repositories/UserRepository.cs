@@ -6,56 +6,10 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DAL.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private readonly AuthServerContext _context;
-
-        public UserRepository(AuthServerContext context)
+        public UserRepository(AuthServerContext context) : base(context)
         {
-            _context = context;
         }
-
-        public async Task CreateAsync(User entity)
-        {
-            await _context.Users.AddAsync(entity);
-        }
-
-        public async Task<User?> ReadAsync(int id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
-            return user;
-        }
-
-        public async Task<IEnumerable<User>> ReadByConditionAsync(Expression<Func<User, bool>> predicate)
-        {
-            var users = await _context.Users.Where(predicate).ToListAsync();
-            return users;
-        }
-
-        public async Task UpdateAsync(User entity)
-        {
-            User? oldEntity = await ReadAsync(entity.Id);
-
-            if (oldEntity == null)
-            {
-                await CreateAsync(entity);
-            }
-            else
-            {
-                EntityEntry<User> entityEntry = _context.Entry(oldEntity);
-
-                entityEntry.CurrentValues.SetValues(entity);
-            }
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var user = await ReadAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
-        }
-
     }
 }

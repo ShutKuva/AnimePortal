@@ -34,7 +34,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("GenresId");
 
-                    b.ToTable("AnimeDescriptionGenre");
+                    b.ToTable("AnimeDescriptionGenre", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.Anime", b =>
@@ -67,7 +67,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Animes");
+                    b.ToTable("Animes", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.AnimeDescription", b =>
@@ -110,7 +110,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("AnimeDescription");
+                    b.ToTable("AnimeDescription", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.Comment", b =>
@@ -153,7 +153,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.Language", b =>
@@ -170,7 +170,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.Photo", b =>
@@ -203,7 +203,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("AnimeId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.RelatedAnime", b =>
@@ -246,7 +246,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("AnimeId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("Core.DB.User", b =>
@@ -277,7 +277,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("AnimeDescriptionGenre", b =>
