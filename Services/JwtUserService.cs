@@ -85,7 +85,7 @@ namespace Services
 
             user.RefreshToken = handler.WriteToken(GenerateJwtRefreshTokenForUser(user));
 
-            await _userService.CreateUserAsync(user);
+            await _userService.UpdateUserAsync(user);
 
             JwtSecurityToken token = GenerateJwtAccessTokenForUser(user);
 

@@ -14,6 +14,8 @@ namespace Adapters.Abstractions
 
         Task<VideoDto> GetVideo(int videoId);
 
-        Task<IEnumerable<VideoDto>> GetVideosOfAnime(int animeId, int producerId, string language);
+        Task<IEnumerable<VideoDto>> GetVideosOfAnime(int animeId, ClaimsPrincipal user, string language);
+
+        Task DeleteVideo(int videoId);
     }
 }

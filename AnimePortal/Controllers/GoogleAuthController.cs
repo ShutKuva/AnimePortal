@@ -13,9 +13,9 @@ namespace AnimePortalAuthServer.Controllers
 {
     public class GoogleAuthController : BaseController
     {
-        private readonly IUserService<JwtUserDto, GoogleAuthUser, User, object> _googleAuthService;
+        private readonly IJwtUserService<JwtUserDto, GoogleAuthUser, User, object> _googleAuthService;
 
-        public GoogleAuthController(IUserService<JwtUserDto, GoogleAuthUser, User, object> userService)
+        public GoogleAuthController(IJwtUserService<JwtUserDto, GoogleAuthUser, User, object> userService)
 		{
             _googleAuthService = userService;
         }

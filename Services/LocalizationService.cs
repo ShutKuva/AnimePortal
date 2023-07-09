@@ -35,6 +35,7 @@ namespace Services
             {
                 Language = actualLanguage,
                 LocalizationProducerId = producer.Id,
+                AnimeId = anime.Id,
             };
 
             await _unitOfWork.LocalizationRepository.CreateAsync(newLocalization);

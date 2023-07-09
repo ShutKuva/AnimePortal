@@ -10,7 +10,7 @@ using Services.Abstraction.Interfaces;
 
 namespace Services
 {
-    public class GoogleAuthUserService : IUserService<JwtUserDto, GoogleAuthUser, User, object>
+    public class GoogleAuthUserService : IJwtUserService<JwtUserDto, GoogleAuthUser, User, object>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtTokenHandler _tokenHandler;

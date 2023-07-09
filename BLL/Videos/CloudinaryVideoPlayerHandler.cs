@@ -60,6 +60,7 @@ namespace BLL.Videos
                 PublicId = response.PublicId,
                 Title = videoId.ToString(),
                 Url = response.Url.AbsoluteUri,
+                VideoId = videoId,
             };
 
             await _unitOfWork.CloudinaryVideoRepository.CreateAsync(video);
@@ -67,7 +68,7 @@ namespace BLL.Videos
             Player player = new Player()
             {
                 Name = PLAYER_NAME,
-                Url = Path.Combine(_cloudinaryPlayerConfigurations.Url, video.PublicId),
+                Url = _cloudinaryPlayerConfigurations.Url + "/" + video.PublicId,
                 VideoId = videoId,
             };
 
@@ -86,7 +87,10 @@ namespace BLL.Videos
 
             CloudinaryVideo video = videos.First();
 
-            DeletionParams deletionParams = new DeletionParams(video.PublicId);
+            DeletionParams deletionParams = new DeletionParams(video.PublicId)
+            {
+                ResourceType = ResourceType.Video,
+            };
 
             DeletionResult response = await _cloudinary.DestroyAsync(deletionParams);
 

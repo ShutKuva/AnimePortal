@@ -18,10 +18,31 @@ namespace AnimePortalAuthServer.Controllers
         }
 
         [HttpPost("{language}/{animeId}/videos")]
-        public async Task<IActionResult> AddVideoAsync(string language, int animeId, [FromQuery] VideoTypes videoType, IFormFile[] files)
+        public async Task<IActionResult> AddVideoAsync([FromForm] IEnumerable<IFormFile> videos, string language, int animeId, [FromQuery] VideoTypes videoType)
         {
-            await _videoAdapter.AddVideosAsProducerOfLocalizationAsync(User, animeId, language, videoType, files);
+            var test = Request.Form;
 
+            await _videoAdapter.AddVideosAsProducerOfLocalizationAsync(User, animeId, language, videoType, videos);
+
+            return Ok();
+        }
+
+        [HttpGet("{language}/{animeId}/videos")]
+        public async Task<OkObjectResult> GetVideos(string language, int animeId)
+        {
+            return Ok(await _videoAdapter.GetVideosOfAnime(animeId, User, language));
+        }
+
+        [HttpGet("videos/{id}")]
+        public async Task<OkObjectResult> GetVideo(int id)
+        {
+            return Ok(await _videoAdapter.GetVideo(id));
+        }
+
+        [HttpDelete("videos/{id}")]
+        public async Task<OkResult> DeleteVideo(int id)
+        {
+            await _videoAdapter.DeleteVideo(id);
             return Ok();
         }
     }

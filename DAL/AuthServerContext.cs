@@ -15,6 +15,7 @@ namespace DAL
         public DbSet<Language> Languages { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<CloudinaryVideo> CloudinaryVideos { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options) { }
 

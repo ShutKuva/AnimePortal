@@ -14,7 +14,7 @@ namespace DAL.Repositories
 
         public override async Task<Comment?> ReadAsync(int id)
         {
-            var comment = await _context.Comments
+            var comment = await context.Comments
                 .Include(c => c.ParentComment)
                 .FirstOrDefaultAsync(c => c.Id == id);
             return comment;

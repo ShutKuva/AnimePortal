@@ -29,6 +29,7 @@ namespace Services
             };
 
             await _unitOfWork.UserRepository.CreateAsync(newUser);
+            await _unitOfWork.SaveChangesAsync();
 
             return newUser;
         }
@@ -38,6 +39,7 @@ namespace Services
             newUser.PasswordHash = _hasher.Hash(newUser.PasswordHash);
 
             await _unitOfWork.UserRepository.CreateAsync(newUser);
+            await _unitOfWork.SaveChangesAsync();
 
             return newUser;
         }
@@ -50,17 +52,28 @@ namespace Services
 
         public async Task<User?> GetUserByCredentialsAsync(string identifier, string password)
         {
-            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => (user.Name == identifier || user.Email == identifier) && user.PasswordHash == _hasher.Hash(password));
+            string hashedPassword = _hasher.Hash(password);
+            IEnumerable<User> usersWithSameCredentials = await _unitOfWork.UserRepository.ReadByConditionAsync(user => (user.Name == identifier || user.Email == identifier) && user.PasswordHash == hashedPassword);
             return usersWithSameCredentials.FirstOrDefault();
         }
-        public Task UpdateUserAsync(User newValuesForUser)
+
+        public async Task UpdateUserAsync(User newValuesForUser)
         {
-            return _unitOfWork.UserRepository.UpdateAsync(newValuesForUser);
+            if (newValuesForUser.Id < 1)
+            {
+                await CreateUserAsync(newValuesForUser);
+            }
+            else
+            {
+                await _unitOfWork.UserRepository.UpdateAsync(newValuesForUser);
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
-        public Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            return _unitOfWork.UserRepository.DeleteAsync(id);
+            await _unitOfWork.UserRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

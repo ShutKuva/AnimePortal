@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using Adapters;
 using Adapters.Abstractions;
@@ -20,6 +21,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Services;
 using Services.Abstraction.Interfaces;
@@ -66,6 +68,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ValidateIssuer = false,
         ValidateLifetime = true,
+        IssuerSigningKey = builder.Environment.IsDevelopment() ? new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT:AccessSecretCode"]!)) : new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT_ACCESS_SECRET_CODE"]!))
     };
 }).AddGoogle(options =>
 {
@@ -101,11 +104,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
 builder.Services.AddScoped<IHasher, SHA256Hasher>();
 
-builder.Services.AddScoped<IUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
-builder.Services.AddScoped<IUserService<JwtUserDto, GoogleAuthUser, User, object>, GoogleAuthUserService>();
 builder.Services.AddScoped<IVideoPlayerHandler, CloudinaryVideoPlayerHandler>();
 
 builder.Services.AddScoped<IJwtUserService<JwtUserDto, RegisterUser, LoginUser, RefreshUser>, JwtUserService>();
+builder.Services.AddScoped<IJwtUserService<JwtUserDto, GoogleAuthUser, User, object>, GoogleAuthUserService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IRelatedAnimeService, RelatedAnimeService>();
@@ -142,6 +144,7 @@ builder.Services.Configure<JwtConfigurations>(jwtConfigurations =>
         jwtConfigurations.RefreshSecretCode = builder.Configuration["JWT_REFRESH_SECRET_CODE"]!;
     }
 });
+
 builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>
 {
     if (builder.Environment.IsDevelopment())
@@ -155,6 +158,18 @@ builder.Services.Configure<CloudinarySettings>(cloudinaryConfiguration =>
         cloudinaryConfiguration.ApiKey = builder.Configuration["CLOUDINARY_API_KEY"];
         cloudinaryConfiguration.ApiSecret = builder.Configuration["CLOUDINARY_API_SECRET"];
         cloudinaryConfiguration.CloudName = builder.Configuration["CLOUDINARY_CLOUD_NAME"];
+    }
+});
+
+builder.Services.Configure<CloudinaryPlayerConfigurations>(cloudinaryplayerConfigurations =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        cloudinaryplayerConfigurations.Url = builder.Configuration["Players:CloudinaryPlayer:Url"]!;
+    } 
+    else
+    {
+
     }
 });
 

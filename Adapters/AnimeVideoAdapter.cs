@@ -62,9 +62,9 @@ namespace Adapters
             return _mapper.Map<VideoDto>(video);
         }
 
-        public async Task<IEnumerable<VideoDto>> GetVideosOfAnime(int animeId, int producerId, string language)
+        public async Task<IEnumerable<VideoDto>> GetVideosOfAnime(int animeId, ClaimsPrincipal user, string language)
         {
-            Localization localization = await GetLocalization(animeId, language, producerId: producerId);
+            Localization localization = await GetLocalization(animeId, language, user: user);
 
             return _mapper.Map<IEnumerable<VideoDto>>(localization.Videos);
         }
@@ -98,6 +98,16 @@ namespace Adapters
             {
                 await handler.CreatePlayerAsync(videoObject.Id, videoStream);
             }
+        }
+
+        public async Task DeleteVideo(int videoId)
+        {
+            foreach (IVideoPlayerHandler handler in _handlers)
+            {
+                await handler.FreeVideoResourcesAsync(videoId);
+            }
+
+            await _videoService.DeleteVideoAsync(videoId);
         }
     }
 }

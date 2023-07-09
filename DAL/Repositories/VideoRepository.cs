@@ -5,44 +5,22 @@ using System.Linq.Expressions;
 
 namespace DAL.Repositories
 {
-    public class VideoRepository : IVideoRepository
+    public class VideoRepository : GenericRepository<Video>, IVideoRepository
     {
-        private readonly AuthServerContext _context;
-
-        public VideoRepository(AuthServerContext context)
+        public VideoRepository(AuthServerContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task CreateAsync(Video entity)
+        public override async Task<Video?> ReadAsync(int id)
         {
-            await _context.Videos.AddAsync(entity);
-        }
-
-        public async Task<Video?> ReadAsync(int id)
-        {
-            var video = await _context.Videos.FirstOrDefaultAsync(photo => photo.Id == id);
+            var video = await context.Videos.Include(v => v.Players).FirstOrDefaultAsync(e => e.Id == id);
             return video;
         }
 
-        public async Task<IEnumerable<Video>> ReadByConditionAsync(Expression<Func<Video, bool>> predicate)
+        public override async Task<IEnumerable<Video>> ReadByConditionAsync(Expression<Func<Video, bool>> predicate)
         {
-            var videos = await _context.Videos.Where(predicate).ToListAsync();
+            var videos = await context.Videos.Include(v => v.Players).Where(predicate).ToListAsync();
             return videos;
-        }
-
-        public Task UpdateAsync(Video entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var video = await ReadAsync(id);
-            if (video != null)
-            {
-                _context.Videos.Remove(video);
-            }
         }
     }
 }
